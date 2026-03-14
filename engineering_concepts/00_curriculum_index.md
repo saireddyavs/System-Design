@@ -25,6 +25,8 @@
 | 14 | [Security & Identity](14_security.md) | OAuth/OIDC, JWT, E2E Encryption, TLS 1.3, mTLS, DDoS Mitigation, Macaroons, Password Hashing, Padding Oracle | 91–95 |
 | 15 | [Reliability & Ops](15_reliability_ops.md) | Chaos Engineering, Blue/Green, Canary, C10K, CDN, Health Checks, Graceful Degradation, Shuffle Sharding | 96–98 |
 | 16 | [Case Studies](16_case_studies.md) | Amazon Prime, Facebook Haystack, Twitter Fanout, WhatsApp 2M Connections, Discord GC, Dynamo, Spanner, MapReduce→Spark→Flink, CAP Proof | 99–100 |
+| 17 | [AI Engineering](17_ai_engineering.md) | AI Agents, AI Coding Workflow, Context Engineering, ChatGPT Apps, LLM Concepts, MCP, Reinforcement Learning, Fine-tuning vs RAG vs Prompt vs Context | 101–108 |
+| 18 | [White Papers](18_white_papers.md) | Amazon Dynamo, Google Spanner, Meta XFaaS, How to Read Systems Papers | 109–113 |
 
 ---
 
@@ -52,3 +54,6 @@
 | Kafka | LinkedIn |
 | Actor Model | WhatsApp (Erlang) |
 | CDN | Cloudflare, Akamai |
+| AI Agents (ReAct) | LangChain, AutoGPT, CrewAI |
+| MCP | Anthropic, OpenAI (ChatGPT Apps) |
+| RLHF | ChatGPT, Claude |

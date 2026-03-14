@@ -16,6 +16,9 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [CAP Theorem & Consistency](01-fundamentals/cap-theorem-consistency.md) | CAP, PACELC, consistency models (strong, eventual, causal) |
 | [Consistent Hashing](01-fundamentals/consistent-hashing.md) | Hash rings, virtual nodes, rebalancing, implementations |
 | [Back-of-Envelope Estimation](01-fundamentals/back-of-envelope.md) | Latency numbers, throughput calculations, storage estimates |
+| [What Happens When You Type a URL](01-fundamentals/what-happens-url.md) | DNS → TCP → TLS → HTTP → rendering, full journey |
+| [Frontend System Design](01-fundamentals/frontend-system-design.md) | 21 concepts: rendering pipeline, code splitting, SSR/CSR/SSG, Web Workers, PWA |
+| [System Design Interview Framework](01-fundamentals/system-design-interview-framework.md) | Step-by-step framework, estimation, patterns cheat sheet |
 
 ### 02 — Networking
 | File | Topics |
@@ -23,9 +26,12 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [DNS](02-networking/dns.md) | Resolution, record types, caching, GeoDNS, failures |
 | [TCP vs UDP](02-networking/tcp-udp.md) | Handshakes, congestion control, when to use each |
 | [HTTP Protocols](02-networking/http-protocols.md) | HTTP/1.1, HTTP/2, HTTP/3 (QUIC), TLS, keep-alive |
+| [HTTP Headers](02-networking/http-headers.md) | Request, response, security, caching, CORS headers |
 | [Load Balancing](02-networking/load-balancing.md) | L4 vs L7, algorithms, health checks, global load balancing |
 | [CDN](02-networking/cdn.md) | Push vs pull, edge caching, cache invalidation, providers |
 | [Proxies](02-networking/proxies.md) | Forward vs reverse proxy, sidecar proxy, service mesh |
+| [API Gateway vs LB vs Reverse Proxy](02-networking/api-gateway-vs-lb-vs-proxy.md) | When to use each, overlap, decision matrix |
+| [How Nginx Works](02-networking/nginx.md) | Event-driven, master-worker, C10K, 1M connections |
 
 ### 03 — API Design
 | File | Topics |
@@ -33,6 +39,8 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [API Design Principles](03-apis/api-design.md) | Pagination, versioning, error handling, backward compatibility |
 | [REST vs GraphQL vs gRPC](03-apis/rest-graphql-grpc.md) | Tradeoffs, when to use each, protocol buffers |
 | [API Gateway](03-apis/api-gateway.md) | Routing, auth, rate limiting, request aggregation |
+| [API Versioning](03-apis/api-versioning.md) | URL, header, query param, content negotiation, deprecation |
+| [Remote Procedure Call (RPC)](03-apis/rpc.md) | gRPC, Thrift, Protocol Buffers, IDL, stubs, marshaling |
 | [WebSockets & Webhooks](03-apis/websockets-webhooks.md) | Long polling, SSE, bidirectional communication |
 | [Rate Limiting](03-apis/rate-limiting.md) | Token bucket, sliding window, distributed rate limiting |
 | [Idempotency](03-apis/idempotency.md) | Idempotency keys, at-least-once delivery, deduplication |
@@ -47,6 +55,7 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [Replication](04-databases/replication.md) | Leader-follower, multi-leader, leaderless, conflict resolution |
 | [Database Types & Selection](04-databases/database-types-selection.md) | Choosing the right database, comparison matrix |
 | [Bloom Filters](04-databases/bloom-filters.md) | Probabilistic data structures, false positives, use cases |
+| [Quotient Filter](04-databases/quotient-filter.md) | Quotient/remainder, deletion support, comparison with Bloom/Cuckoo |
 
 ### 05 — Caching
 | File | Topics |
@@ -54,6 +63,7 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [Caching Strategies](05-caching/caching-strategies.md) | Cache-aside, write-through, write-back, read-through |
 | [Cache Eviction](05-caching/cache-eviction.md) | LRU, LFU, TTL, ARC, comparison and pseudocode |
 | [Distributed Caching](05-caching/distributed-caching.md) | Redis, Memcached, cache coherence, thundering herd |
+| [Redis Use Cases](05-caching/redis-use-cases.md) | Caching, sessions, rate limiting, leaderboards, pub/sub, geospatial, Redlock |
 
 ### 06 — Messaging & Streaming
 | File | Topics |
@@ -72,6 +82,8 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [Distributed Locking](07-distributed-systems/distributed-locking.md) | Redlock, ZooKeeper locks, fencing, correctness |
 | [Gossip Protocol](07-distributed-systems/gossip-protocol.md) | Epidemic protocols, failure detection, CRDT |
 | [Clocks & Ordering](07-distributed-systems/clocks-ordering.md) | Lamport clocks, vector clocks, hybrid logical clocks |
+| [Actor Model](07-distributed-systems/actor-model.md) | Erlang/Akka/Orleans, message passing, supervision trees |
+| [Hinted Handoff](07-distributed-systems/hinted-handoff.md) | Temporary writes for unavailable nodes, Dynamo, Cassandra |
 
 ### 08 — Architectural Patterns
 | File | Topics |
@@ -82,6 +94,10 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [Service Mesh](08-architecture/service-mesh.md) | Istio, Envoy, sidecar pattern, mTLS |
 | [Circuit Breaker](08-architecture/circuit-breaker.md) | States, bulkhead, timeout patterns |
 | [Service Discovery](08-architecture/service-discovery.md) | Client-side, server-side, DNS-based, Consul/etcd |
+| [Cell-Based Architecture](08-architecture/cell-based-architecture.md) | Independent cells, blast radius reduction, fault isolation |
+| [Micro Frontends](08-architecture/micro-frontends.md) | Module federation, independent teams, composition approaches |
+| [Sidecar Pattern](08-architecture/sidecar-pattern.md) | Envoy, Istio, ambassador, adapter patterns |
+| [Deployment Patterns](08-architecture/deployment-patterns.md) | Blue-green, canary, rolling, feature flags, A/B testing |
 
 ### 09 — Reliability
 | File | Topics |
@@ -96,6 +112,8 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [Authentication & Authorization](10-security/authentication-authorization.md) | OAuth2, JWT, RBAC, ABAC, SSO |
 | [Encryption & TLS](10-security/encryption-tls.md) | Symmetric/asymmetric, TLS handshake, mTLS |
 | [Secrets Management](10-security/secrets-management.md) | Vault, KMS, rotation, environment variables |
+| [API Security](10-security/api-security.md) | OAuth 2.0, OWASP Top 10, input validation, CORS, mTLS |
+| [How HTTPS Works](10-security/https.md) | TLS handshake, certificates, TLS 1.3, 0-RTT |
 
 ### 11 — Observability
 | File | Topics |
@@ -145,6 +163,11 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [Payment System](15-interview-problems/medium/payment-system.md) | Design a payment system |
 | [Job Scheduler](15-interview-problems/medium/job-scheduler.md) | Design a distributed job scheduler |
 | [Tinder](15-interview-problems/medium/tinder.md) | Design Tinder |
+| [Airbnb](15-interview-problems/medium/airbnb.md) | Design Airbnb (search, booking, HTTP streaming) |
+| [ChatGPT](15-interview-problems/medium/chatgpt.md) | Design ChatGPT (token streaming, model serving) |
+| [Slack](15-interview-problems/medium/slack.md) | Design Slack (real-time messaging, channels, search) |
+| [Reddit](15-interview-problems/medium/reddit.md) | Design Reddit (subreddits, voting, feed ranking) |
+| [LinkedIn](15-interview-problems/medium/linkedin.md) | Design LinkedIn (social graph, feed, PYMK) |
 
 #### Hard
 | File | Problem |
@@ -156,6 +179,16 @@ Covers all major distributed systems concepts, architectural patterns, and real-
 | [Dropbox](15-interview-problems/hard/dropbox.md) | Design Dropbox / file sync |
 | [Zoom](15-interview-problems/hard/zoom.md) | Design Zoom / video conferencing |
 | [Ticket Booking](15-interview-problems/hard/ticket-booking.md) | Design BookMyShow / event booking |
+| [Stock Exchange](15-interview-problems/hard/stock-exchange.md) | Design a stock exchange (order matching, ultra-low latency) |
+
+### 16 — Company Case Studies
+| File | Topics |
+|------|--------|
+| [Scaling Stories](16-case-studies/scaling-stories.md) | AWS 10M users, GCP 100M, Khan Academy, Dropbox, Levels.fyi, Instagram 2.5B |
+| [Real-Time Systems](16-case-studies/real-time-systems.md) | Gaming leaderboard, live comments, distributed counter, Disney+ Hotstar, Facebook Live, Canva |
+| [Data & Infrastructure](16-case-studies/data-and-infrastructure.md) | Amazon S3 durability, Lambda, Cloudflare+Postgres, Figma, Quora, Meta TAO |
+| [Company Architectures](16-case-studies/company-architectures.md) | Netflix, Google Search, Reddit, Slack, Bluesky, WeChat, Apple AirTags/Pay |
+| [High-Throughput Systems](16-case-studies/high-throughput-systems.md) | PayPal, Shopify, Uber, Stripe, WhatsApp, YouTube, Zoom, LinkedIn, Discord |
 
 ---
 
