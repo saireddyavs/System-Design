@@ -40,57 +40,6 @@ func NewSearchService(
 	}
 }
 
-// SearchMoviesByTitle finds movies matching title
-func (s *SearchService) SearchMoviesByTitle(title string) ([]*models.Movie, error) {
-	return s.movieRepo.SearchByTitle(title)
-}
-
-// SearchMoviesByGenre finds movies by genre
-func (s *SearchService) SearchMoviesByGenre(genre models.Genre) ([]*models.Movie, error) {
-	return s.movieRepo.SearchByGenre(genre)
-}
-
-// SearchByCity finds movies with shows in a city
-func (s *SearchService) SearchByCity(city string) ([]*SearchResult, error) {
-	theatres, err := s.theatreRepo.GetByCity(city)
-	if err != nil {
-		return nil, err
-	}
-
-	moviesSeen := make(map[string]bool)
-	var results []*SearchResult
-
-	for _, theatre := range theatres {
-		shows, err := s.showRepo.GetByTheatreID(theatre.ID)
-		if err != nil {
-			continue
-		}
-		for _, show := range shows {
-			if moviesSeen[show.MovieID] {
-				continue
-			}
-			movie, err := s.movieRepo.GetByID(show.MovieID)
-			if err != nil {
-				continue
-			}
-			moviesSeen[show.MovieID] = true
-			allShows, _ := s.showRepo.GetByTheatreID(theatre.ID)
-			var movieShows []*models.Show
-			for _, sh := range allShows {
-				if sh.MovieID == show.MovieID {
-					movieShows = append(movieShows, sh)
-				}
-			}
-			results = append(results, &SearchResult{
-				Movie:   movie,
-				Shows:   movieShows,
-				Theatre: theatre,
-			})
-		}
-	}
-	return results, nil
-}
-
 // Search combines title, genre, and city filters
 func (s *SearchService) Search(criteria *SearchCriteria) ([]*SearchResult, error) {
 	var movies []*models.Movie

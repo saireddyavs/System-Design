@@ -9,7 +9,6 @@ var (
 	ErrBookingNotFound      = errors.New("booking not found")
 	ErrInvalidStateTransition = errors.New("invalid state transition")
 	ErrInvalidDateRange     = errors.New("check-out must be after check-in")
-	ErrPaymentRequired     = errors.New("payment required before confirmation")
 	ErrPaymentNotFound     = errors.New("payment not found")
 	ErrPaymentAlreadyPaid  = errors.New("payment already completed")
 )

@@ -82,17 +82,3 @@ func (r *InMemoryVersionRepo) DeleteByFileID(fileID string) error {
 	delete(r.byFileID, fileID)
 	return nil
 }
-
-func (r *InMemoryVersionRepo) GetLatestVersion(fileID string) (*models.Version, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	ids := r.byFileID[fileID]
-	if len(ids) == 0 {
-		return nil, ErrVersionNotFound
-	}
-	lastID := ids[len(ids)-1]
-	if v, exists := r.versions[lastID]; exists {
-		return v, nil
-	}
-	return nil, ErrVersionNotFound
-}

@@ -65,17 +65,13 @@ d = R × c  (R = 6371 km)
 
 **Base Formula**: `Fare = BaseFare + (Distance × PerKmRate) + (Duration × PerMinuteRate)`
 
-**Surge Pricing**: When active requests exceed threshold (default 10), apply multiplier (default 1.5x).
-
-```go
-effectiveFare = baseFare × surgeMultiplier
-```
+**Surge multiplier**: When active requests exceed threshold (default 10), apply multiplier (default 1.5x) to the calculated fare. Surge is passed to `FareCalculator.Calculate()`; `BaseFareStrategy` applies it to the total.
 
 ## Design Patterns
 
 | Pattern | Where | Why |
 |---------|-------|-----|
-| **Strategy** | `MatchingStrategy`, `FareCalculator` | Swap matching algorithms (nearest vs highest-rated) and fare formulas (base vs surge) without changing client code. Open/Closed Principle. |
+| **Strategy** | `MatchingStrategy`, `FareCalculator` | Swap matching algorithms (nearest vs highest-rated) and fare formulas (base + distance + time with surge multiplier) without changing client code. Open/Closed Principle. |
 | **Observer** | `RideNotifier`, `RideObserver` | Notify multiple subscribers (push notifications, analytics, logging) when ride status changes. Loose coupling. |
 | **State** | `RideStatus` (Requested → DriverAssigned → InProgress → Completed/Cancelled) | Encapsulate state-specific behavior. Invalid transitions are prevented. |
 | **Repository** | `DriverRepository`, `RideRepository`, etc. | Abstract data access. Swap in-memory for PostgreSQL without changing business logic. |
@@ -144,7 +140,7 @@ go test ./tests/... -v
 
 2. **Matching**: We inject `MatchingStrategy` into `MatchingService`. Default is `NearestDriverStrategy` using Haversine. We could add `HighestRatedStrategy` or `EcoFriendlyStrategy` without changing the service.
 
-3. **Fare**: `FareCalculator` interface allows different formulas. `BaseFareStrategy` does base + distance + time. Surge multiplier is computed from active request count.
+3. **Fare**: `FareCalculator` interface with `BaseFareStrategy` (base + distance + time). Surge multiplier is computed from active request count and passed to `Calculate()`.
 
 4. **State**: Ride status is an enum. Transitions are validated in the service (e.g., can't complete a ride that hasn't started).
 

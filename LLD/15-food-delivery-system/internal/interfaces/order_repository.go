@@ -1,9 +1,6 @@
 package interfaces
 
-import (
-	"food-delivery-system/internal/models"
-	"time"
-)
+import "food-delivery-system/internal/models"
 
 // OrderRepository defines the contract for order data access (Repository Pattern)
 type OrderRepository interface {
@@ -13,5 +10,4 @@ type OrderRepository interface {
 	GetByRestaurantID(restaurantID string) ([]*models.Order, error)
 	GetByAgentID(agentID string) ([]*models.Order, error)
 	Update(order *models.Order) error
-	GetOrdersInStatus(status models.OrderStatus, since time.Time) ([]*models.Order, error)
 }

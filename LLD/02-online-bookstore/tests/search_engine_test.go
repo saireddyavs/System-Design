@@ -7,10 +7,9 @@ import (
 	"online-bookstore/internal/interfaces"
 	"online-bookstore/internal/models"
 	"online-bookstore/internal/repositories"
-	"online-bookstore/internal/services"
 )
 
-func setupSearchTest(t *testing.T) *services.SearchService {
+func setupSearchTest(t *testing.T) interfaces.SearchEngine {
 	bookRepo := repositories.NewInMemoryBookRepository()
 	books := []*models.Book{
 		{ID: "1", Title: "The Go Programming Language", Author: "Alan Donovan", ISBN: "978-1", Price: 49.99, Genre: "Programming", Stock: 10, CreatedAt: time.Now()},
@@ -21,14 +20,13 @@ func setupSearchTest(t *testing.T) *services.SearchService {
 		_ = bookRepo.Create(b)
 	}
 
-	searchEngine := repositories.NewInMemorySearchEngine(bookRepo)
-	return services.NewSearchService(searchEngine)
+	return repositories.NewInMemorySearchEngine(bookRepo)
 }
 
-func TestSearchService_SearchByTitle(t *testing.T) {
-	searchSvc := setupSearchTest(t)
+func TestSearchEngine_SearchByTitle(t *testing.T) {
+	searchEngine := setupSearchTest(t)
 
-	results, err := searchSvc.SearchByTitle("Go")
+	results, err := searchEngine.SearchByTitle("Go")
 	if err != nil {
 		t.Fatalf("SearchByTitle failed: %v", err)
 	}
@@ -40,10 +38,10 @@ func TestSearchService_SearchByTitle(t *testing.T) {
 	}
 }
 
-func TestSearchService_SearchByTitle_CaseInsensitive(t *testing.T) {
-	searchSvc := setupSearchTest(t)
+func TestSearchEngine_SearchByTitle_CaseInsensitive(t *testing.T) {
+	searchEngine := setupSearchTest(t)
 
-	results, err := searchSvc.SearchByTitle("CLEAN")
+	results, err := searchEngine.SearchByTitle("CLEAN")
 	if err != nil {
 		t.Fatalf("SearchByTitle failed: %v", err)
 	}
@@ -52,10 +50,10 @@ func TestSearchService_SearchByTitle_CaseInsensitive(t *testing.T) {
 	}
 }
 
-func TestSearchService_SearchByAuthor(t *testing.T) {
-	searchSvc := setupSearchTest(t)
+func TestSearchEngine_SearchByAuthor(t *testing.T) {
+	searchEngine := setupSearchTest(t)
 
-	results, err := searchSvc.SearchByAuthor("Martin")
+	results, err := searchEngine.SearchByAuthor("Martin")
 	if err != nil {
 		t.Fatalf("SearchByAuthor failed: %v", err)
 	}
@@ -64,10 +62,10 @@ func TestSearchService_SearchByAuthor(t *testing.T) {
 	}
 }
 
-func TestSearchService_SearchByGenre(t *testing.T) {
-	searchSvc := setupSearchTest(t)
+func TestSearchEngine_SearchByGenre(t *testing.T) {
+	searchEngine := setupSearchTest(t)
 
-	results, err := searchSvc.SearchByGenre("Programming")
+	results, err := searchEngine.SearchByGenre("Programming")
 	if err != nil {
 		t.Fatalf("SearchByGenre failed: %v", err)
 	}
@@ -76,10 +74,10 @@ func TestSearchService_SearchByGenre(t *testing.T) {
 	}
 }
 
-func TestSearchService_Search_AllFields(t *testing.T) {
-	searchSvc := setupSearchTest(t)
+func TestSearchEngine_Search_AllFields(t *testing.T) {
+	searchEngine := setupSearchTest(t)
 
-	results, err := searchSvc.Search("Pattern", interfaces.SearchTypeAll)
+	results, err := searchEngine.Search("Pattern", interfaces.SearchTypeAll)
 	if err != nil {
 		t.Fatalf("Search failed: %v", err)
 	}

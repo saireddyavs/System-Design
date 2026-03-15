@@ -51,12 +51,3 @@ func (r *InMemoryTheatreRepository) GetByCity(city string) ([]*models.Theatre, e
 	return result, nil
 }
 
-func (r *InMemoryTheatreRepository) GetAll() ([]*models.Theatre, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	result := make([]*models.Theatre, 0, len(r.theatres))
-	for _, t := range r.theatres {
-		result = append(result, t)
-	}
-	return result, nil
-}

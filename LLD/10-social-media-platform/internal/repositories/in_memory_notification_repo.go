@@ -60,31 +60,3 @@ func (r *InMemoryNotificationRepository) GetByUserID(userID string, limit, offse
 	}
 	return notifications[start:end], nil
 }
-
-func (r *InMemoryNotificationRepository) MarkAsRead(notificationID string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	if n, exists := r.notifications[notificationID]; exists {
-		n.MarkAsRead()
-	}
-	return nil
-}
-
-func (r *InMemoryNotificationRepository) GetUnreadCount(userID string) (int, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	ids, exists := r.byUserID[userID]
-	if !exists {
-		return 0, nil
-	}
-
-	count := 0
-	for _, id := range ids {
-		if n, ok := r.notifications[id]; ok && !n.Read {
-			count++
-		}
-	}
-	return count, nil
-}

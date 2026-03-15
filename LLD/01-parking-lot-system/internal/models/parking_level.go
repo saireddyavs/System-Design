@@ -50,10 +50,3 @@ func (l *ParkingLevel) GetAvailableSpots(vehicle Vehicle) []*ParkingSpot {
 func (l *ParkingLevel) CountAvailableSpots(vehicle Vehicle) int {
 	return len(l.GetAvailableSpots(vehicle))
 }
-
-// GetTotalSpots returns total number of spots on this level.
-func (l *ParkingLevel) GetTotalSpots() int {
-	l.mu.RLock()
-	defer l.mu.RUnlock()
-	return len(l.Spots)
-}

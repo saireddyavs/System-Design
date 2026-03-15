@@ -21,16 +21,6 @@ func (d *DirectDelivery) Deliver(broker *InMemoryBroker, message *models.Message
 	return nil
 }
 
-// BroadcastDelivery delivers to all recipients (same as direct for our use case)
-type BroadcastDelivery struct{}
-
-func (b *BroadcastDelivery) Deliver(broker *InMemoryBroker, message *models.Message, recipientIDs []string) error {
-	for _, userID := range recipientIDs {
-		broker.deliverToUser(userID, message)
-	}
-	return nil
-}
-
 // InMemoryBroker implements MessageBroker - Observer pattern for real-time delivery
 // Each user has a channel; subscribers receive messages via their channel
 type InMemoryBroker struct {
@@ -127,12 +117,4 @@ func (b *InMemoryBroker) ClearQueue(userID string) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	delete(b.queues, userID)
-}
-
-// IsSubscribed checks if user has active subscription (for testing)
-func (b *InMemoryBroker) IsSubscribed(userID string) bool {
-	b.mu.RLock()
-	defer b.mu.RUnlock()
-	_, exists := b.subscribers[userID]
-	return exists
 }

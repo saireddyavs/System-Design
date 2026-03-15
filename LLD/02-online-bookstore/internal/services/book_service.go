@@ -49,14 +49,6 @@ func (s *BookService) GetBook(id string) (*models.Book, error) {
 	return s.bookRepo.GetByID(id)
 }
 
-func (s *BookService) UpdateBook(book *models.Book) error {
-	return s.bookRepo.Update(book)
-}
-
-func (s *BookService) DeleteBook(id string) error {
-	return s.bookRepo.Delete(id)
-}
-
 func (s *BookService) ListBooks() ([]*models.Book, error) {
 	return s.bookRepo.GetAll()
 }

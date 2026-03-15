@@ -8,8 +8,6 @@ type PaymentStatus string
 const (
 	PaymentStatusPending   PaymentStatus = "pending"
 	PaymentStatusCompleted PaymentStatus = "completed"
-	PaymentStatusFailed    PaymentStatus = "failed"
-	PaymentStatusRefunded  PaymentStatus = "refunded"
 )
 
 // Payment represents a payment transaction.

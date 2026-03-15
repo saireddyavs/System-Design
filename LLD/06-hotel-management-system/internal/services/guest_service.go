@@ -24,21 +24,3 @@ func (s *GuestService) RegisterGuest(id, name, email, phone, idProof string) (*m
 	return guest, nil
 }
 
-// GetGuest returns guest by ID
-func (s *GuestService) GetGuest(id string) (*models.Guest, error) {
-	guest, err := s.guestRepo.GetByID(id)
-	if err != nil {
-		return nil, ErrGuestNotFound
-	}
-	return guest, nil
-}
-
-// AddLoyaltyPoints adds points to guest
-func (s *GuestService) AddLoyaltyPoints(guestID string, points int) error {
-	guest, err := s.guestRepo.GetByID(guestID)
-	if err != nil {
-		return ErrGuestNotFound
-	}
-	guest.AddLoyaltyPoints(points)
-	return s.guestRepo.Update(guest)
-}

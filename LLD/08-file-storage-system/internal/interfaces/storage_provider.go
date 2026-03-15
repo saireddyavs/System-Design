@@ -11,7 +11,4 @@ type StorageProvider interface {
 
 	// Delete removes content from storage.
 	Delete(path string) error
-
-	// Exists checks if content exists at path.
-	Exists(path string) (bool, error)
 }

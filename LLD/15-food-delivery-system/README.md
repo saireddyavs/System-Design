@@ -106,7 +106,7 @@ func (l Location) Distance(other Location) float64 {
 
 | Pattern | Where | Why |
 |---------|-------|-----|
-| **Strategy** | `DeliveryStrategy`, `PricingStrategy` | Different strategies for agent assignment (nearest, highest-rated) and pricing (base + delivery + surge) without changing core logic |
+| **Strategy** | `DeliveryStrategy`, `PricingStrategy` | Different strategies for agent assignment (nearest agent) and pricing (base + delivery + surge) without changing core logic |
 | **Observer** | `OrderObserver`, `OrderObserverManager` | Notify multiple consumers (logging, push, email) when order status changes |
 | **State** | Order status transitions | `canTransition()` enforces valid state transitions; prevents invalid flows |
 | **Factory** | `OrderService.PlaceOrder` | Creates order with validated items, calculated amounts, assigned agent |
@@ -171,7 +171,7 @@ go test ./tests/... -v
 
 2. **Order Lifecycle**: State machine with `canTransition()`—only valid transitions allowed. Cancellation only before preparing.
 
-3. **Delivery Assignment**: Strategy pattern. `NearestAgentStrategy` finds agents within radius, picks closest. `HighestRatedAgentStrategy` alternative. Haversine for distance.
+3. **Delivery Assignment**: Strategy pattern. `NearestAgentStrategy` finds agents within radius, picks closest. Haversine for distance.
 
 4. **Pricing**: `PricingStrategy` computes delivery fee from distance, surge from time. Easy to add new strategies.
 

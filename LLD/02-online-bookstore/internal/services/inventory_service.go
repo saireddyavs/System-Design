@@ -35,17 +35,6 @@ func (s *InventoryService) RegisterObserver(observer interfaces.InventoryObserve
 	s.observers = append(s.observers, observer)
 }
 
-func (s *InventoryService) Restock(bookID string, quantity int) error {
-	if err := s.bookRepo.UpdateStock(bookID, quantity); err != nil {
-		return err
-	}
-	book, _ := s.bookRepo.GetByID(bookID)
-	if book != nil {
-		s.checkAndNotify(book)
-	}
-	return nil
-}
-
 func (s *InventoryService) CheckLowStock() {
 	books, err := s.bookRepo.GetAll()
 	if err != nil {
@@ -65,12 +54,4 @@ func (s *InventoryService) checkAndNotify(book *models.Book) {
 			o.OnLowStock(book, s.threshold)
 		}
 	}
-}
-
-func (s *InventoryService) GetStock(bookID string) (int, error) {
-	book, err := s.bookRepo.GetByID(bookID)
-	if err != nil || book == nil {
-		return 0, err
-	}
-	return book.Stock, nil
 }

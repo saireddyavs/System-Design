@@ -31,7 +31,6 @@ func main() {
 	// Strategy pattern: Choose pricing strategy
 	pricingStrategy := strategies.NewWeekdayPricingStrategy()
 
-	_ = services.NewMovieService(movieRepo)
 	_ = services.NewShowService(showRepo, screenRepo, movieRepo)
 	bookingService := services.NewBookingService(
 		bookingRepo, showRepo, screenRepo, userRepo,

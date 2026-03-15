@@ -43,30 +43,6 @@ func (r *InMemoryBookingRepository) GetByID(id string) (*models.Booking, error) 
 	return booking, nil
 }
 
-func (r *InMemoryBookingRepository) GetByGuestID(guestID string) ([]*models.Booking, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Booking
-	for _, b := range r.bookings {
-		if b.GuestID == guestID {
-			result = append(result, b)
-		}
-	}
-	return result, nil
-}
-
-func (r *InMemoryBookingRepository) GetByRoomID(roomID string) ([]*models.Booking, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Booking
-	for _, b := range r.bookings {
-		if b.RoomID == roomID {
-			result = append(result, b)
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryBookingRepository) Update(booking *models.Booking) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -74,16 +50,6 @@ func (r *InMemoryBookingRepository) Update(booking *models.Booking) error {
 		return ErrBookingNotFound
 	}
 	r.bookings[booking.ID] = booking
-	return nil
-}
-
-func (r *InMemoryBookingRepository) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if _, exists := r.bookings[id]; !exists {
-		return ErrBookingNotFound
-	}
-	delete(r.bookings, id)
 	return nil
 }
 
@@ -106,6 +72,3 @@ func (r *InMemoryBookingRepository) GetBookingsForRoomInRange(roomID string, che
 	return result, nil
 }
 
-func (r *InMemoryBookingRepository) GetActiveBookingsForRoom(roomID string, asOf time.Time) ([]*models.Booking, error) {
-	return r.GetBookingsForRoomInRange(roomID, asOf, asOf.Add(24*time.Hour))
-}

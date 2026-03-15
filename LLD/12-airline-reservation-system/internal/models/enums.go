@@ -15,7 +15,6 @@ type SeatStatus string
 const (
 	SeatStatusAvailable SeatStatus = "Available"
 	SeatStatusBooked    SeatStatus = "Booked"
-	SeatStatusBlocked   SeatStatus = "Blocked"
 )
 
 // FlightStatus represents the operational status of a flight
@@ -23,11 +22,7 @@ type FlightStatus string
 
 const (
 	FlightStatusScheduled FlightStatus = "Scheduled"
-	FlightStatusOnTime    FlightStatus = "OnTime"
-	FlightStatusDelayed   FlightStatus = "Delayed"
 	FlightStatusCancelled FlightStatus = "Cancelled"
-	FlightStatusDeparted  FlightStatus = "Departed"
-	FlightStatusArrived   FlightStatus = "Arrived"
 )
 
 // BookingStatus represents the status of a booking
@@ -35,9 +30,7 @@ type BookingStatus string
 
 const (
 	BookingStatusConfirmed BookingStatus = "Confirmed"
-	BookingStatusCancelled  BookingStatus = "Cancelled"
-	BookingStatusPending   BookingStatus = "Pending"
-	BookingStatusCheckedIn BookingStatus = "CheckedIn"
+	BookingStatusCancelled BookingStatus = "Cancelled"
 )
 
 // BaggageAllowance returns the baggage allowance in kg for each seat class

@@ -33,17 +33,6 @@ func (r *InMemoryCartRepository) Create(cart *models.Cart) error {
 	return nil
 }
 
-func (r *InMemoryCartRepository) GetByID(id string) (*models.Cart, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	cart, exists := r.carts[id]
-	if !exists {
-		return nil, ErrCartNotFound
-	}
-	return cart, nil
-}
-
 func (r *InMemoryCartRepository) GetByUserID(userID string) (*models.Cart, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -64,16 +53,5 @@ func (r *InMemoryCartRepository) Update(cart *models.Cart) error {
 		return ErrCartNotFound
 	}
 	r.carts[cart.ID] = cart
-	return nil
-}
-
-func (r *InMemoryCartRepository) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	if _, exists := r.carts[id]; !exists {
-		return ErrCartNotFound
-	}
-	delete(r.carts, id)
 	return nil
 }

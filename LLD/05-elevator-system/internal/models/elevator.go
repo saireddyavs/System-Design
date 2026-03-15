@@ -25,18 +25,9 @@ type Elevator struct {
 	RequestQueue []*Request
 	mu           sync.RWMutex
 
-	// Observer pattern: subscribers for floor arrival
-	observers []FloorArrivalObserver
-
 	// Config
 	DoorOpenDuration time.Duration
 	FloorTravelTime  time.Duration
-}
-
-// FloorArrivalObserver interface for Observer pattern.
-// SOLID-ISP: Interface segregation - only floor arrival events.
-type FloorArrivalObserver interface {
-	OnFloorArrival(elevatorID string, floor int)
 }
 
 // NewElevator creates a new elevator with default config.
@@ -49,28 +40,8 @@ func NewElevator(id string) *Elevator {
 		Capacity:        DefaultCapacity,
 		CurrentLoad:     0,
 		RequestQueue:    make([]*Request, 0),
-		observers:       make([]FloorArrivalObserver, 0),
 		DoorOpenDuration: DefaultDoorTime,
 		FloorTravelTime:  DefaultFloorTime,
-	}
-}
-
-// AddObserver adds a floor arrival observer.
-func (e *Elevator) AddObserver(o FloorArrivalObserver) {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	e.observers = append(e.observers, o)
-}
-
-// notifyObservers notifies all observers of floor arrival.
-func (e *Elevator) notifyObservers(floor int) {
-	e.mu.RLock()
-	observers := make([]FloorArrivalObserver, len(e.observers))
-	copy(observers, e.observers)
-	e.mu.RUnlock()
-
-	for _, o := range observers {
-		o.OnFloorArrival(e.ID, floor)
 	}
 }
 
@@ -123,12 +94,11 @@ func (e *Elevator) SetDirection(d Direction) {
 	e.Direction = d
 }
 
-// SetFloor updates current floor and notifies observers.
+// SetFloor updates current floor.
 func (e *Elevator) SetFloor(floor int) {
 	e.mu.Lock()
+	defer e.mu.Unlock()
 	e.CurrentFloor = floor
-	e.mu.Unlock()
-	e.notifyObservers(floor)
 }
 
 // AddLoad adds weight (passenger boarding).
@@ -204,15 +174,6 @@ func (e *Elevator) RemoveDropoffRequestsAtFloor(floor int, weightPerPassenger in
 	}
 	e.RequestQueue = remaining
 	return removed
-}
-
-// RemoveRequestsAtFloor removes requests served at the given floor (legacy, use ProcessPickup/RemoveDropoff).
-func (e *Elevator) RemoveRequestsAtFloor(floor int, isPickup bool) []*Request {
-	if isPickup {
-		e.ProcessPickupAtFloor(floor, 70)
-		return nil // Don't remove at pickup
-	}
-	return e.RemoveDropoffRequestsAtFloor(floor, 70)
 }
 
 // SetRequestQueue replaces the queue (used by scheduling strategy).

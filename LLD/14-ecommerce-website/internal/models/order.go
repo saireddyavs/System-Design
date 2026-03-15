@@ -8,10 +8,7 @@ type OrderStatus string
 const (
 	OrderStatusPlaced    OrderStatus = "Placed"
 	OrderStatusConfirmed OrderStatus = "Confirmed"
-	OrderStatusShipped   OrderStatus = "Shipped"
-	OrderStatusDelivered OrderStatus = "Delivered"
 	OrderStatusCancelled OrderStatus = "Cancelled"
-	OrderStatusReturned  OrderStatus = "Returned"
 )
 
 // OrderItem represents a line item in an order

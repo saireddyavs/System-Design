@@ -43,39 +43,6 @@ func (r *InMemoryRoomRepository) GetByID(id string) (*models.Room, error) {
 	return room, nil
 }
 
-func (r *InMemoryRoomRepository) GetByNumber(number string) (*models.Room, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	for _, room := range r.rooms {
-		if room.Number == number {
-			return room, nil
-		}
-	}
-	return nil, ErrRoomNotFound
-}
-
-func (r *InMemoryRoomRepository) GetAll() ([]*models.Room, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	result := make([]*models.Room, 0, len(r.rooms))
-	for _, room := range r.rooms {
-		result = append(result, room)
-	}
-	return result, nil
-}
-
-func (r *InMemoryRoomRepository) GetByType(roomType models.RoomType) ([]*models.Room, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Room
-	for _, room := range r.rooms {
-		if room.Type == roomType {
-			result = append(result, room)
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryRoomRepository) Update(room *models.Room) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -83,16 +50,6 @@ func (r *InMemoryRoomRepository) Update(room *models.Room) error {
 		return ErrRoomNotFound
 	}
 	r.rooms[room.ID] = room
-	return nil
-}
-
-func (r *InMemoryRoomRepository) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if _, exists := r.rooms[id]; !exists {
-		return ErrRoomNotFound
-	}
-	delete(r.rooms, id)
 	return nil
 }
 

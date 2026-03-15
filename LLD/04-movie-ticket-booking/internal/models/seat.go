@@ -17,8 +17,3 @@ type Seat struct {
 	Number   int          `json:"number"`
 	Category SeatCategory `json:"category"`
 }
-
-// SeatID returns unique identifier for seat in a show context
-func (s *Seat) SeatID() string {
-	return s.ID
-}

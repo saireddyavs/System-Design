@@ -244,11 +244,6 @@ func (s *RideService) GetRide(rideID string) (*models.Ride, error) {
 	return s.rideRepo.GetByID(rideID)
 }
 
-// Subscribe adds a ride status observer
-func (s *RideService) Subscribe(observer interfaces.RideObserver) {
-	s.notifier.Subscribe(observer)
-}
-
 func (s *RideService) getSurgeMultiplier() float64 {
 	count, err := s.rideRepo.CountActiveRequests()
 	if err != nil || count < SurgeThreshold {

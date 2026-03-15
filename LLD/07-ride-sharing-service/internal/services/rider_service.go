@@ -41,7 +41,3 @@ func (s *RiderService) UpdateLocation(riderID string, location models.Location) 
 	return s.riderRepo.Update(rider)
 }
 
-// GetRider retrieves rider by ID
-func (s *RiderService) GetRider(riderID string) (*models.Rider, error) {
-	return s.riderRepo.GetByID(riderID)
-}

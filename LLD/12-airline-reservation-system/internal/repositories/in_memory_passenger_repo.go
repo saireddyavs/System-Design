@@ -48,25 +48,3 @@ func (r *InMemoryPassengerRepository) GetByID(id string) (*models.Passenger, err
 	return &pCopy, nil
 }
 
-func (r *InMemoryPassengerRepository) Update(passenger *models.Passenger) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	if _, exists := r.passengers[passenger.ID]; !exists {
-		return ErrPassengerNotFound
-	}
-	p := *passenger
-	r.passengers[passenger.ID] = &p
-	return nil
-}
-
-func (r *InMemoryPassengerRepository) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	if _, exists := r.passengers[id]; !exists {
-		return ErrPassengerNotFound
-	}
-	delete(r.passengers, id)
-	return nil
-}

@@ -47,13 +47,3 @@ func (s *NotificationService) GenerateID() string {
 func (s *NotificationService) GetUserNotifications(userID string, limit, offset int) ([]*models.Notification, error) {
 	return s.repo.GetByUserID(userID, limit, offset)
 }
-
-// MarkAsRead marks a notification as read
-func (s *NotificationService) MarkAsRead(notificationID string) error {
-	return s.repo.MarkAsRead(notificationID)
-}
-
-// GetUnreadCount returns the count of unread notifications for a user
-func (s *NotificationService) GetUnreadCount(userID string) (int, error) {
-	return s.repo.GetUnreadCount(userID)
-}

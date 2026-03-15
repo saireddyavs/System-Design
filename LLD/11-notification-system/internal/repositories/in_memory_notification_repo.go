@@ -31,19 +31,6 @@ func (r *InMemoryNotificationRepository) Create(ctx context.Context, notificatio
 	return nil
 }
 
-// GetByID retrieves a notification by ID
-func (r *InMemoryNotificationRepository) GetByID(ctx context.Context, id string) (*models.Notification, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	n, ok := r.notifications[id]
-	if !ok {
-		return nil, ErrNotFound
-	}
-	copy := *n
-	return &copy, nil
-}
-
 // Update updates an existing notification
 func (r *InMemoryNotificationRepository) Update(ctx context.Context, notification *models.Notification) error {
 	r.mu.Lock()
@@ -55,43 +42,6 @@ func (r *InMemoryNotificationRepository) Update(ctx context.Context, notificatio
 	n := *notification
 	r.notifications[n.ID] = &n
 	return nil
-}
-
-// ListByUserID returns notifications for a user
-func (r *InMemoryNotificationRepository) ListByUserID(ctx context.Context, userID string, limit int) ([]*models.Notification, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	var result []*models.Notification
-	for _, n := range r.notifications {
-		if n.UserID == userID {
-			copy := *n
-			result = append(result, &copy)
-		}
-	}
-	// Simple limit - in production would sort by CreatedAt desc
-	if len(result) > limit {
-		result = result[:limit]
-	}
-	return result, nil
-}
-
-// ListByStatus returns notifications with given status
-func (r *InMemoryNotificationRepository) ListByStatus(ctx context.Context, status models.Status, limit int) ([]*models.Notification, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	var result []*models.Notification
-	for _, n := range r.notifications {
-		if n.Status == status {
-			copy := *n
-			result = append(result, &copy)
-		}
-	}
-	if len(result) > limit {
-		result = result[:limit]
-	}
-	return result, nil
 }
 
 var ErrNotFound = &NotFoundError{}

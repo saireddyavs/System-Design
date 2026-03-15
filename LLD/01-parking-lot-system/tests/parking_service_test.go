@@ -41,7 +41,7 @@ func TestParkingService_Park_Success(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 
 	// Park motorcycle - should get small spot
 	mc := models.NewVehicle(models.VehicleTypeMotorcycle, "MC-001")
@@ -84,7 +84,7 @@ func TestParkingService_Park_NoSpotAvailable(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 
 	// Fill all large spots
 	bus1 := models.NewVehicle(models.VehicleTypeBus, "BUS-001")
@@ -104,7 +104,7 @@ func TestParkingService_Park_DuplicateVehicle(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 	car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 
 	_, err := ps.Park(car)
@@ -122,7 +122,7 @@ func TestParkingService_Unpark_Success(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 	car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 
 	ticket, err := ps.Park(car)
@@ -149,7 +149,7 @@ func TestParkingService_Unpark_ByLicensePlate(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 	car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 	_, _ = ps.Park(car)
 
@@ -166,7 +166,7 @@ func TestParkingService_Unpark_NotFound(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 
 	_, _, err := ps.Unpark("TKT-999")
 	if err == nil {
@@ -178,7 +178,7 @@ func TestParkingService_GetAvailableSpotsCount(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 	car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 
 	initial := ps.GetAvailableSpotsCount(car)
@@ -197,7 +197,7 @@ func TestParkingService_ConcurrentParkUnpark(t *testing.T) {
 	lot, cleanup := setupTestParkingLot(t)
 	defer cleanup()
 
-	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
+	ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 	var wg sync.WaitGroup
 
 	// Park 5 vehicles concurrently with unique plates

@@ -10,7 +10,6 @@ import (
 // DIP: High-level modules depend on abstraction, not concrete implementation
 type AccountRepository interface {
 	GetByID(ctx context.Context, id string) (*models.Account, error)
-	GetByAccountNumber(ctx context.Context, accountNumber string) (*models.Account, error)
 	Save(ctx context.Context, account *models.Account) error
 	Update(ctx context.Context, account *models.Account) error
 }

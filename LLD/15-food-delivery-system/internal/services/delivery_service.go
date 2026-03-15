@@ -66,8 +66,3 @@ func (s *DeliveryService) RegisterAgent(id, name, phone string, loc models.Locat
 	}
 	return agent, nil
 }
-
-// UpdateAgentLocation updates agent's current location
-func (s *DeliveryService) UpdateAgentLocation(agentID string, loc models.Location) error {
-	return s.agentRepo.UpdateLocation(agentID, loc)
-}

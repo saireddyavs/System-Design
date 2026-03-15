@@ -35,18 +35,6 @@ func (r *InMemoryTemplateRepository) GetByID(ctx context.Context, id string) (*m
 	return t, nil
 }
 
-// GetByName retrieves a template by name
-func (r *InMemoryTemplateRepository) GetByName(ctx context.Context, name string) (*models.Template, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	t, ok := r.byName[name]
-	if !ok {
-		return nil, ErrNotFound
-	}
-	return t, nil
-}
-
 // Save stores or updates a template
 func (r *InMemoryTemplateRepository) Save(ctx context.Context, template *models.Template) error {
 	r.mu.Lock()

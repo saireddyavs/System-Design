@@ -114,13 +114,3 @@ func (s *MessageService) Subscribe(userID string) <-chan *models.Message {
 func (s *MessageService) Unsubscribe(userID string) {
 	s.broker.Unsubscribe(userID)
 }
-
-// GetQueuedMessages returns messages queued for offline delivery
-func (s *MessageService) GetQueuedMessages(userID string) []*models.Message {
-	return s.broker.GetQueuedMessages(userID)
-}
-
-// ClearQueuedMessages clears queue after delivering to user
-func (s *MessageService) ClearQueuedMessages(userID string) {
-	s.broker.ClearQueue(userID)
-}

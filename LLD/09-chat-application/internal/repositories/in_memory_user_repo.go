@@ -90,26 +90,3 @@ func (r *InMemoryUserRepository) Update(user *models.User) error {
 	r.users[user.ID] = &userCopy
 	return nil
 }
-
-func (r *InMemoryUserRepository) Search(query string, limit int) ([]*models.User, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	query = strings.ToLower(strings.TrimSpace(query))
-	if query == "" {
-		return nil, nil
-	}
-
-	var results []*models.User
-	for _, user := range r.users {
-		if strings.Contains(strings.ToLower(user.Username), query) ||
-			strings.Contains(strings.ToLower(user.Email), query) {
-			userCopy := *user
-			results = append(results, &userCopy)
-			if len(results) >= limit {
-				break
-			}
-		}
-	}
-	return results, nil
-}

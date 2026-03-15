@@ -107,13 +107,3 @@ func (s *ShowService) CreateShow(builder *ShowBuilder) (*models.Show, error) {
 func (s *ShowService) GetShow(id string) (*models.Show, error) {
 	return s.showRepo.GetByID(id)
 }
-
-// GetShowsByMovie retrieves shows for a movie
-func (s *ShowService) GetShowsByMovie(movieID string) ([]*models.Show, error) {
-	return s.showRepo.GetByMovieID(movieID)
-}
-
-// GetShowsByTheatre retrieves shows for a theatre
-func (s *ShowService) GetShowsByTheatre(theatreID string) ([]*models.Show, error) {
-	return s.showRepo.GetByTheatreID(theatreID)
-}

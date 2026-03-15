@@ -61,18 +61,6 @@ func (r *InMemoryLoanRepo) GetActiveByBookID(bookID string) (*models.Loan, error
 	return nil, ErrLoanNotFound
 }
 
-func (r *InMemoryLoanRepo) GetActiveByMemberID(memberID string) ([]*models.Loan, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Loan
-	for _, l := range r.loans {
-		if l.MemberID == memberID && l.Status == models.LoanStatusActive {
-			result = append(result, l)
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryLoanRepo) GetOverdueLoans() ([]*models.Loan, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()

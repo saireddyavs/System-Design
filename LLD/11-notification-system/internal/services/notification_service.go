@@ -33,14 +33,13 @@ type NotificationObserver interface {
 // NotificationService orchestrates notification delivery
 // Template Method: ProcessNotification defines the pipeline
 type NotificationService struct {
-	repo           interfaces.NotificationRepository
-	userRepo       interfaces.UserRepository
-	senders        map[models.Channel]interfaces.NotificationSender
-	templateSvc    *TemplateService
-	preferenceSvc  *PreferenceService
-	rateLimiter    interfaces.RateLimiter
-	observers      []NotificationObserver
-	observersMu    sync.RWMutex
+	repo        interfaces.NotificationRepository
+	userRepo    interfaces.UserRepository
+	senders     map[models.Channel]interfaces.NotificationSender
+	templateSvc *TemplateService
+	rateLimiter interfaces.RateLimiter
+	observers   []NotificationObserver
+	observersMu sync.RWMutex
 }
 
 // NewNotificationService creates a new notification service
@@ -49,17 +48,15 @@ func NewNotificationService(
 	userRepo interfaces.UserRepository,
 	senders map[models.Channel]interfaces.NotificationSender,
 	templateSvc *TemplateService,
-	preferenceSvc *PreferenceService,
 	rateLimiter interfaces.RateLimiter,
 ) *NotificationService {
 	return &NotificationService{
-		repo:          repo,
-		userRepo:      userRepo,
-		senders:       senders,
-		templateSvc:   templateSvc,
-		preferenceSvc: preferenceSvc,
-		rateLimiter:   rateLimiter,
-		observers:     make([]NotificationObserver, 0),
+		repo:        repo,
+		userRepo:    userRepo,
+		senders:     senders,
+		templateSvc: templateSvc,
+		rateLimiter: rateLimiter,
+		observers:   make([]NotificationObserver, 0),
 	}
 }
 

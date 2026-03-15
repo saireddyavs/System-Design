@@ -40,7 +40,3 @@ func (s *AutoAssignFirstAvailable) AssignSeats(seats []*models.Seat, count int, 
 	}
 	return result, nil
 }
-
-func (s *AutoAssignFirstAvailable) Name() string {
-	return "AutoAssignFirstAvailable"
-}

@@ -17,10 +17,9 @@ func main() {
 
 	// Create services with strategies (DIP: inject dependencies)
 	parkingStrategy := strategies.NewNearestSpotStrategy()
-	feeCalculator := strategies.NewHourlyFeeStrategy()
+	feeStrategy := strategies.NewHourlyFeeStrategy()
 
-	parkingService := services.NewParkingService(lot, parkingStrategy)
-	feeService := services.NewFeeService(feeCalculator)
+	parkingService := services.NewParkingService(lot, parkingStrategy, feeStrategy)
 
 	// Demo: Park vehicles
 	fmt.Println("=== Parking Lot System Demo ===")
@@ -64,7 +63,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unpark: %v", err)
 	}
-	fee := feeService.CalculateFee(ticket, 0)
+	fee := parkingService.CalculateFee(ticket, 0)
 	fmt.Printf("\nUnparked vehicle: %s, Fee: %d cents ($%.2f)\n",
 		vehicle.GetLicensePlate(), fee, float64(fee)/100)
 
@@ -73,7 +72,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unpark by license: %v", err)
 	}
-	finalFee := feeService.CalculateFee(finalTicket, 0)
+	finalFee := parkingService.CalculateFee(finalTicket, 0)
 	fmt.Printf("Unparked by license: %s, Fee: %d cents ($%.2f)\n",
 		finalVehicle.GetLicensePlate(), finalFee, float64(finalFee)/100)
 

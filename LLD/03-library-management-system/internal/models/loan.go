@@ -27,15 +27,3 @@ type Loan struct {
 func (l *Loan) IsOverdue() bool {
 	return l.Status == LoanStatusActive && time.Now().After(l.DueDate)
 }
-
-// DaysOverdue returns number of days past due (0 if not overdue)
-func (l *Loan) DaysOverdue() int {
-	if !l.IsOverdue() {
-		return 0
-	}
-	days := int(time.Since(l.DueDate).Hours() / 24)
-	if days < 0 {
-		return 0
-	}
-	return days
-}

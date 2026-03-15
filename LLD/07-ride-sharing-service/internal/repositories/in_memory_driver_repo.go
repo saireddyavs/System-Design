@@ -51,19 +51,6 @@ func (r *InMemoryDriverRepository) Update(driver *models.Driver) error {
 	return nil
 }
 
-// GetAvailableDrivers returns all available drivers
-func (r *InMemoryDriverRepository) GetAvailableDrivers() ([]*models.Driver, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Driver
-	for _, d := range r.drivers {
-		if d.IsAvailable() && d.GetRating() >= 3.0 {
-			result = append(result, d)
-		}
-	}
-	return result, nil
-}
-
 // GetAvailableDriversNear returns available drivers within radius
 func (r *InMemoryDriverRepository) GetAvailableDriversNear(location models.Location, radiusKm float64) ([]*models.Driver, error) {
 	r.mu.RLock()

@@ -59,7 +59,7 @@ A production-quality, interview-ready implementation of an Online Bookstore in G
 
 ### Strategy Pattern
 **Where**: `interfaces/payment_processor.go`, `strategies/payment_strategies.go`  
-**Why**: Multiple payment methods (Credit Card, PayPal) without `switch`/`if-else`. **OCP** – add new methods by implementing `PaymentProcessor` and registering. No changes to `OrderService`.
+**Why**: Multiple payment methods (Credit Card, etc.) without `switch`/`if-else`. **OCP** – add new methods by implementing `PaymentProcessor` and registering. No changes to `OrderService`.
 
 ### Observer Pattern
 **Where**: `interfaces/inventory_observer.go`, `services/inventory_service.go`, `services/low_stock_observer.go`  
@@ -68,10 +68,6 @@ A production-quality, interview-ready implementation of an Online Bookstore in G
 ### Factory Pattern
 **Where**: `strategies/order_factory.go`  
 **Why**: Centralizes order creation with validation, ID generation, and item aggregation. Keeps `OrderService` focused on orchestration.
-
-### Builder Pattern (Optional)
-**Where**: `strategies/book_query_builder.go`  
-**Why**: Fluent API for complex search criteria (title + author + genre + price range). Improves readability for multi-field queries.
 
 ---
 
@@ -101,7 +97,7 @@ A production-quality, interview-ready implementation of an Online Bookstore in G
   - Inverted index: O(log N) lookup
   - Full-text search, fuzzy matching, relevance scoring
 
-**Extensibility**: `SearchEngine` interface allows swapping implementations without changing `SearchService`.
+**Extensibility**: `SearchEngine` interface allows swapping implementations (e.g., Elasticsearch) without changing callers. Use `SearchEngine` directly; no separate SearchService.
 
 ---
 
@@ -118,12 +114,12 @@ A production-quality, interview-ready implementation of an Online Bookstore in G
 ## 7. Interview Explanation
 
 ### 3-Minute Version
-> "This is an Online Bookstore with books, users, carts, and orders. I used **Repository** to abstract data access so we can swap in-memory for a database. **Strategy** handles payment methods—Credit Card and PayPal—so adding new methods doesn't touch order logic. **Observer** notifies when stock is low. **Factory** creates orders from cart items. Services depend on interfaces (**DIP**), and each service has one job (**SRP**). Search uses case-insensitive substring matching; for scale, we'd use Elasticsearch. All repos use `RWMutex` for thread safety."
+> "This is an Online Bookstore with books, users, carts, and orders. I used **Repository** to abstract data access so we can swap in-memory for a database. **Strategy** handles payment methods (Credit Card via registry) so adding new methods doesn't touch order logic. **Observer** notifies when stock is low. **Factory** creates orders from cart items. Services depend on interfaces (**DIP**), and each service has one job (**SRP**). Search uses `SearchEngine` directly with case-insensitive substring matching; for scale, we'd use Elasticsearch. All repos use `RWMutex` for thread safety."
 
 ### 10-Minute Version
 > "The system has five core entities: Book, User, Cart, Order, Payment. Users register and authenticate. They search books by title, author, or genre using a `SearchEngine` interface—currently in-memory with substring matching, but we can plug in Elasticsearch.
 >
-> Cart and Order services orchestrate the flow. When placing an order, we use an **OrderFactory** to build the order from cart items, then a **PaymentProcessor** strategy (Credit Card or PayPal) processes payment. Stock is decremented, cart cleared.
+> Cart and Order services orchestrate the flow. When placing an order, we use an **OrderFactory** to build the order from cart items, then a **PaymentProcessor** strategy (Credit Card via registry) processes payment. Stock is decremented, cart cleared.
 >
 > **Design patterns**: Repository for data abstraction, Strategy for payments, Observer for low-stock alerts, Factory for order creation. **SOLID**: SRP in services, OCP for payments/search, LSP for repository implementations, ISP with small interfaces, DIP throughout.
 >
@@ -167,7 +163,7 @@ go test ./tests/... -v
 │   ├── interfaces/          # Repository, SearchEngine, PaymentProcessor, Observer
 │   ├── repositories/        # In-memory implementations
 │   ├── services/            # Business logic
-│   └── strategies/          # Payment, OrderFactory, BookQueryBuilder
+│   └── strategies/          # Payment, OrderFactory
 ├── tests/                   # Unit tests
 ├── go.mod
 └── README.md

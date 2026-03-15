@@ -16,5 +16,4 @@ type FeedItem struct {
 // O - Open/Closed: New sorting algorithms can be added without modifying existing code
 type FeedSortStrategy interface {
 	Sort(items []*FeedItem) []*FeedItem
-	Name() string
 }

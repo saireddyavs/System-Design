@@ -108,14 +108,6 @@ func (s *OrderService) PlaceOrder(userID, paymentMethod string) (*models.Order, 
 	return order, nil
 }
 
-func (s *OrderService) GetOrder(orderID string) (*models.Order, error) {
-	order, err := s.orderRepo.GetByID(orderID)
-	if err != nil || order == nil {
-		return nil, ErrOrderNotFound
-	}
-	return order, nil
-}
-
 func (s *OrderService) GetOrderHistory(userID string) ([]*models.Order, error) {
 	return s.orderRepo.GetByUserID(userID)
 }

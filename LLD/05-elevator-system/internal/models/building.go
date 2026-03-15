@@ -35,15 +35,3 @@ func (b *Building) GetElevators() []*Elevator {
 	defer b.mu.RUnlock()
 	return append([]*Elevator{}, b.Elevators...)
 }
-
-// GetElevatorByID returns elevator by ID.
-func (b *Building) GetElevatorByID(id string) *Elevator {
-	b.mu.RLock()
-	defer b.mu.RUnlock()
-	for _, e := range b.Elevators {
-		if e.ID == id {
-			return e
-		}
-	}
-	return nil
-}

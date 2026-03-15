@@ -182,7 +182,7 @@ Algorithm: CalculateDispense(amount, inventory)
 
 | Principle | Implementation |
 |-----------|----------------|
-| **S**ingle Responsibility | Each service has one job: `AuthService` (auth only), `TransactionService` (transactions only), `AccountService` (account ops) |
+| **S**ingle Responsibility | Each service has one job: `AuthService` (auth only), `TransactionService` (transactions only), `AccountService` (PIN update) |
 | **O**pen/Closed | `CashDispenser` interface: add new strategies without modifying existing code. `TransactionValidator` chain: add validators without changing chain |
 | **L**iskov Substitution | All `CashDispenser` implementations interchangeable. All `TransactionValidator` implementations work in chain |
 | **I**nterface Segregation | Small, focused interfaces: `AuthService`, `CashDispenser`, `ReceiptPrinter` - clients depend only on what they need |

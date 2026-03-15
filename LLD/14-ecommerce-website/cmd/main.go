@@ -33,10 +33,8 @@ func main() {
 	}
 
 	// Observers
-	invObserver := observer.NewInventoryObserver(5)
 	orderObserver := observer.NewOrderStatusObserver()
 	notifier := services.NewLoggingNotificationService()
-	invObserver.Subscribe(notifier)
 	orderObserver.Subscribe(notifier)
 
 	// Payment processors (Strategy pattern)
@@ -55,7 +53,6 @@ func main() {
 	}
 
 	// Services
-	productService := services.NewProductService(productRepo)
 	couponService := services.NewCouponService(couponRepo, discountStrategies)
 	orderFactory := factory.NewOrderFactory(idGen)
 	orderService := services.NewOrderService(
@@ -63,7 +60,6 @@ func main() {
 		orderFactory, paymentService, couponService, orderObserver, idGen,
 	)
 	cartService := services.NewCartService(cartRepo, productRepo, idGen)
-	inventoryService := services.NewInventoryService(productRepo, invObserver)
 	userService := services.NewUserService(userRepo)
 
 	// Seed data
@@ -97,9 +93,6 @@ func main() {
 	// Order history
 	history, _ := orderService.GetOrderHistory(ctx, user.ID, 10, 0)
 	fmt.Printf("Order history: %d orders\n", len(history))
-
-	_ = productService
-	_ = inventoryService
 }
 
 func seedData(ctx context.Context, productRepo *repositories.InMemoryProductRepo, categoryRepo *repositories.InMemoryCategoryRepo, userRepo *repositories.InMemoryUserRepo, couponRepo *repositories.InMemoryCouponRepo) {

@@ -1,7 +1,6 @@
 package services
 
 import (
-	"library-management-system/internal/interfaces"
 	"library-management-system/internal/models"
 	"time"
 )
@@ -12,13 +11,8 @@ type PerDayFineCalculator struct {
 }
 
 // NewPerDayFineCalculator creates calculator with default $1/day rate
-func NewPerDayFineCalculator() interfaces.FineCalculator {
+func NewPerDayFineCalculator() *PerDayFineCalculator {
 	return &PerDayFineCalculator{RatePerDay: 1.0}
-}
-
-// NewPerDayFineCalculatorWithRate creates calculator with custom rate
-func NewPerDayFineCalculatorWithRate(rate float64) interfaces.FineCalculator {
-	return &PerDayFineCalculator{RatePerDay: rate}
 }
 
 // Calculate returns fine amount based on days overdue

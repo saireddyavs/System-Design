@@ -17,8 +17,7 @@ Design and implement the backend for an e-commerce website that supports product
 | **Shopping Cart** | Add, remove, update quantity, clear |
 | **Order Placement** | Place order from cart, track status |
 | **Payment Processing** | Multiple methods: Credit Card, Debit Card, UPI, Wallet |
-| **Inventory Management** | Stock tracking, decrement on order, low stock alerts |
-| **Product Search** | Search by query, filter by category/price |
+| **Inventory Management** | Stock tracking, decrement on order (via OrderService) |
 | **Order History** | List orders for a user |
 | **Coupon/Discount** | Percentage, flat, BOGO (buy-one-get-one) |
 
@@ -112,7 +111,7 @@ Design and implement the backend for an e-commerce website that supports product
 
 | Principle | Implementation |
 |----------|----------------|
-| **S - Single Responsibility** | `ProductService` only handles product logic. `CartService` only cart. `OrderService` orchestrates but delegates to repositories, payment, coupon. |
+| **S - Single Responsibility** | `CartService` only handles cart. `OrderService` orchestrates but delegates to repositories, payment, coupon. |
 | **O - Open/Closed** | New payment methods: add `PaymentProcessor` impl, register in `PaymentService`. New discount types: add `DiscountStrategy`. No changes to existing code. |
 | **L - Liskov Substitution** | Any `ProductRepository` impl (in-memory, PostgreSQL) can replace another. Same for `PaymentProcessor`, `DiscountStrategy`. |
 | **I - Interface Segregation** | Small, focused interfaces: `ProductRepository`, `CartRepository`, `PaymentProcessor`, `NotificationService`. No fat interfaces. |

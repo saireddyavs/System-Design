@@ -6,11 +6,10 @@ import "hotel-management-system/internal/models"
 type BookingEvent string
 
 const (
-	EventBookingConfirmed  BookingEvent = "booking_confirmed"
-	EventBookingCancelled  BookingEvent = "booking_cancelled"
-	EventCheckIn          BookingEvent = "check_in"
-	EventCheckOut         BookingEvent = "check_out"
-	EventPaymentReceived  BookingEvent = "payment_received"
+	EventBookingConfirmed BookingEvent = "booking_confirmed"
+	EventBookingCancelled BookingEvent = "booking_cancelled"
+	EventCheckIn         BookingEvent = "check_in"
+	EventCheckOut        BookingEvent = "check_out"
 )
 
 // NotificationPayload carries event data

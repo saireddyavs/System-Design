@@ -175,18 +175,3 @@ func (s *CartService) RemoveItem(userID, productID string) error {
 func (s *CartService) GetCart(userID string) (*models.Cart, error) {
 	return s.cartRepo.GetByUserID(userID)
 }
-
-func (s *CartService) MarkAbandoned(userID string) error {
-	cart, err := s.cartRepo.GetByUserID(userID)
-	if err != nil {
-		return err
-	}
-	if cart.IsEmpty() {
-		return nil
-	}
-	return s.cartRepo.UpdateStatus(cart.ID, models.CartStatusAbandoned)
-}
-
-func (s *CartService) GetAbandonedCarts(userID string) ([]*models.Cart, error) {
-	return s.cartRepo.GetAbandonedCarts(userID)
-}

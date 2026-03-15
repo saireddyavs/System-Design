@@ -16,10 +16,9 @@ const (
 type RoomStatus string
 
 const (
-	RoomStatusAvailable   RoomStatus = "Available"
-	RoomStatusOccupied    RoomStatus = "Occupied"
-	RoomStatusMaintenance  RoomStatus = "Maintenance"
-	RoomStatusReserved    RoomStatus = "Reserved"
+	RoomStatusAvailable RoomStatus = "Available"
+	RoomStatusOccupied  RoomStatus = "Occupied"
+	RoomStatusReserved  RoomStatus = "Reserved"
 )
 
 // Room represents a hotel room entity

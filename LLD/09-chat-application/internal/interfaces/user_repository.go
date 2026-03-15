@@ -9,5 +9,4 @@ type UserRepository interface {
 	GetByUsername(username string) (*models.User, error)
 	GetByEmail(email string) (*models.User, error)
 	Update(user *models.User) error
-	Search(query string, limit int) ([]*models.User, error)
 }

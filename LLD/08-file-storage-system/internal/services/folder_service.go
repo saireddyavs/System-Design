@@ -63,13 +63,6 @@ func (s *FolderService) CreateFolder(userID, name, parentFolderID string) (*mode
 	return folder, nil
 }
 
-// GetFolder retrieves a folder by ID.
-func (s *FolderService) GetFolder(folderID string) (*models.Folder, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.fileRepo.GetFolderByID(folderID)
-}
-
 // DeleteFolder deletes a folder. Only empty folders or recursive delete.
 func (s *FolderService) DeleteFolder(userID, folderID string, recursive bool) error {
 	s.mu.Lock()
@@ -93,51 +86,6 @@ func (s *FolderService) DeleteFolder(userID, folderID string, recursive bool) er
 	}
 	_ = s.searchEngine.RemoveFromIndex(folderID)
 	return nil
-}
-
-// MoveFolder moves a folder to a new parent.
-func (s *FolderService) MoveFolder(userID, folderID, newParentFolderID string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	folder, err := s.fileRepo.GetFolderByID(folderID)
-	if err != nil {
-		return ErrFolderNotFound
-	}
-	if folder.OwnerID != userID {
-		return ErrPermissionDenied
-	}
-
-	if newParentFolderID != "" {
-		_, err := s.fileRepo.GetFolderByID(newParentFolderID)
-		if err != nil {
-			return ErrParentFolderInvalid
-		}
-	}
-
-	oldParentID := folder.ParentFolderID
-	folder.ParentFolderID = newParentFolderID
-	if err := s.fileRepo.UpdateFolder(folder); err != nil {
-		return err
-	}
-	return s.fileRepo.UpdateFolderParent(folderID, oldParentID, newParentFolderID)
-}
-
-// RenameFolder renames a folder.
-func (s *FolderService) RenameFolder(userID, folderID, newName string) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	folder, err := s.fileRepo.GetFolderByID(folderID)
-	if err != nil {
-		return ErrFolderNotFound
-	}
-	if folder.OwnerID != userID {
-		return ErrPermissionDenied
-	}
-
-	folder.Name = newName
-	return s.fileRepo.UpdateFolder(folder)
 }
 
 // GetFolderSize returns total size of folder (Composite - recursive sum).

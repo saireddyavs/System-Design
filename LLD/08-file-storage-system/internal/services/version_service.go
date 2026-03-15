@@ -71,13 +71,6 @@ func (s *VersionService) CreateVersion(fileID, userID string, content []byte) (*
 	return version, nil
 }
 
-// GetVersion retrieves a specific version.
-func (s *VersionService) GetVersion(fileID string, versionNumber int) (*models.Version, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.versionRepo.GetByFileAndVersion(fileID, versionNumber)
-}
-
 // GetVersionHistory returns all versions for a file.
 func (s *VersionService) GetVersionHistory(fileID string) ([]*models.Version, error) {
 	s.mu.RLock()

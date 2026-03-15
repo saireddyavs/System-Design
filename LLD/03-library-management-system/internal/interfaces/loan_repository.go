@@ -11,7 +11,6 @@ type LoanRepository interface {
 	GetByID(id string) (*models.Loan, error)
 	Update(loan *models.Loan) error
 	GetActiveByBookID(bookID string) (*models.Loan, error)
-	GetActiveByMemberID(memberID string) ([]*models.Loan, error)
 	GetOverdueLoans() ([]*models.Loan, error)
 	GetLoansDueBefore(date time.Time) ([]*models.Loan, error)
 }

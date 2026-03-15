@@ -45,13 +45,3 @@ func (p *InMemoryPaymentProcessor) ProcessPayment(rideID string, amount float64,
 	}
 	return payment, nil
 }
-
-// RefundPayment refunds a payment
-func (p *InMemoryPaymentProcessor) RefundPayment(paymentID string) error {
-	payment, err := p.paymentRepo.GetByID(paymentID)
-	if err != nil {
-		return err
-	}
-	payment.Status = models.PaymentStatusRefunded
-	return p.paymentRepo.Update(payment)
-}

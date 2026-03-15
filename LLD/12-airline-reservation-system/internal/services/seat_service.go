@@ -26,11 +26,6 @@ func NewSeatService(flightRepo interfaces.FlightRepository, strategy interfaces.
 	}
 }
 
-// SetSeatAssignmentStrategy allows changing strategy at runtime (Strategy Pattern)
-func (s *SeatService) SetSeatAssignmentStrategy(strategy interfaces.SeatAssignmentStrategy) {
-	s.seatAssignmentStrategy = strategy
-}
-
 // GetAvailableSeats returns available seats for a flight, optionally filtered by class
 func (s *SeatService) GetAvailableSeats(flightID string, class models.SeatClass) ([]*models.Seat, error) {
 	flight, err := s.flightRepo.GetByID(flightID)

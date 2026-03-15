@@ -31,14 +31,13 @@ func main() {
 	authService := services.NewAuthService(userRepo)
 	cartService := services.NewCartService(cartRepo, bookRepo)
 	orderService := services.NewOrderService(orderRepo, cartRepo, bookRepo, orderFactory, paymentRegistry)
-	searchService := services.NewSearchService(searchEngine)
 	inventoryService := services.NewInventoryService(bookRepo, 5)
 
 	// Observer: Register low-stock notifier
 	inventoryService.RegisterObserver(services.NewLowStockObserver())
 
 	// Demo flow
-	runDemo(bookService, authService, cartService, orderService, searchService, inventoryService)
+	runDemo(bookService, authService, cartService, orderService, searchEngine, inventoryService)
 }
 
 func runDemo(
@@ -46,7 +45,7 @@ func runDemo(
 	authSvc *services.AuthService,
 	cartSvc *services.CartService,
 	orderSvc *services.OrderService,
-	searchSvc *services.SearchService,
+	searchEngine interfaces.SearchEngine,
 	invSvc *services.InventoryService,
 ) {
 	fmt.Println("=== Online Bookstore Demo ===")
@@ -72,7 +71,7 @@ func runDemo(
 	fmt.Printf("Cart created with %d item types\n\n", len(cart.Items))
 
 	// 4. Search books
-	results, _ := searchSvc.SearchByTitle("Go")
+	results, _ := searchEngine.SearchByTitle("Go")
 	fmt.Printf("Search 'Go': found %d book(s)\n", len(results))
 	for _, b := range results {
 		fmt.Printf("  - %s by %s ($%.2f)\n", b.Title, b.Author, b.Price)

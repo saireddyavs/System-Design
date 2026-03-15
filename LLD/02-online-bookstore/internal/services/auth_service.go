@@ -10,10 +10,7 @@ import (
 	"online-bookstore/internal/models"
 )
 
-var (
-	ErrUserExists  = errors.New("user with email already exists")
-	ErrInvalidAuth = errors.New("invalid email or password")
-)
+var ErrUserExists = errors.New("user with email already exists")
 
 // AuthService handles user registration and authentication.
 // SRP: Authentication concerns only.
@@ -46,24 +43,9 @@ func (s *AuthService) Register(name, email, password, address string) (*models.U
 	return user, nil
 }
 
-func (s *AuthService) Login(email, password string) (*models.User, error) {
-	user, err := s.userRepo.GetByEmail(email)
-	if err != nil || user == nil {
-		return nil, ErrInvalidAuth
-	}
-	if !verifyPassword(password, user.Password) {
-		return nil, ErrInvalidAuth
-	}
-	return user, nil
-}
-
 // Simplified auth - in production use bcrypt
 func hashPassword(password string) string {
 	return password // Placeholder - use bcrypt in production
-}
-
-func verifyPassword(plain, hashed string) bool {
-	return plain == hashed
 }
 
 func generateUserID() string {

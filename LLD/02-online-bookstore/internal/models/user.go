@@ -9,6 +9,5 @@ type User struct {
 	Email     string    `json:"email"`
 	Password  string    `json:"-"` // Never expose in JSON
 	Address   string    `json:"address"`
-	CartID    string    `json:"cart_id"`
 	CreatedAt time.Time `json:"created_at"`
 }

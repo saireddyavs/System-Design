@@ -42,11 +42,6 @@ func (s *RoomService) CreateRoom(id, number string, roomType models.RoomType, fl
 	return room, nil
 }
 
-// GetRoom returns room by ID
-func (s *RoomService) GetRoom(id string) (*models.Room, error) {
-	return s.roomRepo.GetByID(id)
-}
-
 // GetAvailableRooms returns rooms available for the date range (no overlapping bookings)
 func (s *RoomService) GetAvailableRooms(criteria SearchCriteria) ([]*models.Room, error) {
 	if criteria.CheckOut.Before(criteria.CheckIn) || criteria.CheckOut.Equal(criteria.CheckIn) {

@@ -4,27 +4,31 @@ import (
 	"fmt"
 	"parking-lot-system/internal/interfaces"
 	"parking-lot-system/internal/models"
-	"sync"
+	"parking-lot-system/internal/strategies"
 	"strings"
+	"sync"
+	"time"
 )
 
-// ParkingService orchestrates park/unpark operations.
+// ParkingService orchestrates park/unpark operations and fee calculation.
 // DIP: Depends on interfaces (ParkingStrategy), not concrete types.
-// SRP: Only responsible for parking operations.
+// SRP: Responsible for parking operations and fee calculation.
 type ParkingService struct {
-	mu              sync.RWMutex
-	lot             *models.ParkingLot
-	strategy        interfaces.ParkingStrategy
-	tickets         map[string]*models.Ticket
-	ticketCounter   int
+	mu            sync.RWMutex
+	lot           *models.ParkingLot
+	strategy      interfaces.ParkingStrategy
+	feeStrategy   *strategies.HourlyFeeStrategy
+	tickets       map[string]*models.Ticket
+	ticketCounter int
 }
 
-// NewParkingService creates a parking service with the given strategy.
-func NewParkingService(lot *models.ParkingLot, strategy interfaces.ParkingStrategy) *ParkingService {
+// NewParkingService creates a parking service with the given strategy and fee calculator.
+func NewParkingService(lot *models.ParkingLot, strategy interfaces.ParkingStrategy, feeStrategy *strategies.HourlyFeeStrategy) *ParkingService {
 	return &ParkingService{
-		lot:      lot,
-		strategy: strategy,
-		tickets:  make(map[string]*models.Ticket),
+		lot:         lot,
+		strategy:    strategy,
+		feeStrategy: feeStrategy,
+		tickets:     make(map[string]*models.Ticket),
 	}
 }
 
@@ -110,18 +114,6 @@ func (s *ParkingService) Unpark(ticketIDOrLicense string) (*models.Ticket, model
 	return ticket, vehicle, nil
 }
 
-// GetTicket returns a ticket by ID or license plate.
-func (s *ParkingService) GetTicket(ticketIDOrLicense string) (*models.Ticket, bool) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	for id, t := range s.tickets {
-		if id == ticketIDOrLicense || strings.EqualFold(t.LicensePlate, ticketIDOrLicense) {
-			return t, true
-		}
-	}
-	return nil, false
-}
-
 // GetAvailableSpotsCount returns total available spots for the vehicle type across all levels.
 func (s *ParkingService) GetAvailableSpotsCount(vehicle models.Vehicle) int {
 	s.mu.RLock()
@@ -131,4 +123,13 @@ func (s *ParkingService) GetAvailableSpotsCount(vehicle models.Vehicle) int {
 		count += level.CountAvailableSpots(vehicle)
 	}
 	return count
+}
+
+// CalculateFee returns the fee in cents for the given ticket and duration.
+// If duration is zero, uses ticket's entry time to now.
+func (s *ParkingService) CalculateFee(ticket *models.Ticket, duration time.Duration) int64 {
+	if duration == 0 {
+		duration = ticket.GetDuration()
+	}
+	return s.feeStrategy.Calculate(ticket.Vehicle, duration)
 }

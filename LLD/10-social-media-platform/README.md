@@ -91,13 +91,11 @@ func GetFeed(userID, limit, offset) {
 
 **Where**: `NotificationPublisher`, `NotificationService`, `PostService`, `FriendshipService`
 
-**Why**: Decouples event producers (like, comment, friend request) from consumers (notification storage, push, email). When a like occurs, we publish a notification event—any subscriber can react (persist, send push, send email) without the producer knowing.
+**Why**: Decouples event producers (like, comment, friend request) from consumers (notification storage, push, email). When a like occurs, we publish a notification event—observers are notified (NotificationService persists; future: PushService could send push) without the producer knowing.
 
 ```go
 // Publisher notifies all observers
 publisher.Publish(notification)
-
-// NotificationService persists; future: PushService could send push
 ```
 
 ### 2. Strategy Pattern (Feed Sorting)
@@ -161,7 +159,7 @@ feed, _ := feedService.GetFeed(userID, 10, 0)
 1. **Architecture**: Clean architecture—models, interfaces, services, repositories. No framework lock-in.
 
 2. **Design Patterns**:
-   - **Observer**: `NotificationPublisher` + subscribers. PostService/FriendshipService publish; NotificationService persists. Future: add PushService as subscriber.
+   - **Observer**: `NotificationPublisher` + observers. PostService/FriendshipService publish; NotificationService persists. Future: add PushService as observer.
    - **Strategy**: `FeedSortStrategy` interface. `ChronologicalFeedStrategy` and `PopularityFeedStrategy` implement it. `FeedService.SetStrategy()` allows runtime switch.
    - **Repository**: All data access behind interfaces. In-memory impl for demo; production would use PostgreSQL/Redis.
    - **Factory**: `models.NewPost`, etc. Centralize creation.

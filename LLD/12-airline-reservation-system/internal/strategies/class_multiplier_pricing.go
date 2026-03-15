@@ -22,7 +22,3 @@ func (p *ClassMultiplierPricing) CalculatePrice(basePrice float64, seats []*mode
 	}
 	return total
 }
-
-func (p *ClassMultiplierPricing) Name() string {
-	return "ClassMultiplier"
-}

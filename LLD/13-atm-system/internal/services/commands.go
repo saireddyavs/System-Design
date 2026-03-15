@@ -5,7 +5,6 @@ import (
 	"atm-system/internal/models"
 	"context"
 	"fmt"
-	"time"
 )
 
 // CommandContext holds context for command execution
@@ -217,14 +216,4 @@ func (c *MiniStatementCommand) Execute(ctx context.Context) (*interfaces.Command
 
 func (c *MiniStatementCommand) GetType() models.TransactionType {
 	return models.TransactionTypeMiniStatement
-}
-
-// FormatMiniStatement formats transactions for display
-func FormatMiniStatement(transactions []*models.Transaction) string {
-	var result string
-	for i, tx := range transactions {
-		result += fmt.Sprintf("%d. %s | %s | Rs.%.2f | %s\n",
-			i+1, tx.Type, tx.Timestamp.Format(time.RFC3339), tx.Amount, tx.Status)
-	}
-	return result
 }

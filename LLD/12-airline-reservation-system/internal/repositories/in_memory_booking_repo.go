@@ -72,24 +72,6 @@ func (r *InMemoryBookingRepository) GetByBookingRef(bookingRef string) (*models.
 	return copyBooking(booking), nil
 }
 
-func (r *InMemoryBookingRepository) GetByPassengerID(passengerID string) ([]*models.Booking, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	bookingIDs, exists := r.passengerIdx[passengerID]
-	if !exists {
-		return []*models.Booking{}, nil
-	}
-
-	result := make([]*models.Booking, 0, len(bookingIDs))
-	for _, id := range bookingIDs {
-		if b, ok := r.bookings[id]; ok {
-			result = append(result, copyBooking(b))
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryBookingRepository) GetByFlightID(flightID string) ([]*models.Booking, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -117,35 +99,6 @@ func (r *InMemoryBookingRepository) Update(booking *models.Booking) error {
 	}
 	r.bookings[booking.ID] = copyBooking(booking)
 	return nil
-}
-
-func (r *InMemoryBookingRepository) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	booking, exists := r.bookings[id]
-	if !exists {
-		return ErrBookingNotFound
-	}
-
-	delete(r.bookings, id)
-	delete(r.bookingRefIdx, booking.BookingRef)
-	removeFromSlice(r.passengerIdx, booking.PassengerID, id)
-	removeFromSlice(r.flightIdx, booking.FlightID, id)
-	return nil
-}
-
-func removeFromSlice(m map[string][]string, key, value string) {
-	slice := m[key]
-	for i, v := range slice {
-		if v == value {
-			m[key] = append(slice[:i], slice[i+1:]...)
-			break
-		}
-	}
-	if len(m[key]) == 0 {
-		delete(m, key)
-	}
 }
 
 func copyBooking(b *models.Booking) *models.Booking {

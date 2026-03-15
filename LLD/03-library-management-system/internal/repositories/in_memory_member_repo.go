@@ -49,23 +49,6 @@ func (r *InMemoryMemberRepo) Update(member *models.Member) error {
 	return nil
 }
 
-func (r *InMemoryMemberRepo) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	delete(r.members, id)
-	return nil
-}
-
-func (r *InMemoryMemberRepo) ListAll() ([]*models.Member, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	members := make([]*models.Member, 0, len(r.members))
-	for _, m := range r.members {
-		members = append(members, m)
-	}
-	return members, nil
-}
-
 func (r *InMemoryMemberRepo) GetByEmail(email string) (*models.Member, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()

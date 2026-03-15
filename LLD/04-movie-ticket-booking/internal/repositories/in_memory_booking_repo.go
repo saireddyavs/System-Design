@@ -38,30 +38,6 @@ func (r *InMemoryBookingRepository) GetByID(id string) (*models.Booking, error) 
 	return b, nil
 }
 
-func (r *InMemoryBookingRepository) GetByUserID(userID string) ([]*models.Booking, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Booking
-	for _, b := range r.bookings {
-		if b.UserID == userID {
-			result = append(result, b)
-		}
-	}
-	return result, nil
-}
-
-func (r *InMemoryBookingRepository) GetByShowID(showID string) ([]*models.Booking, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Booking
-	for _, b := range r.bookings {
-		if b.ShowID == showID && b.Status == models.BookingStatusConfirmed {
-			result = append(result, b)
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryBookingRepository) Update(booking *models.Booking) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()

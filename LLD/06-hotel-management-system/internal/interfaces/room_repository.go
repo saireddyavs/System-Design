@@ -11,11 +11,7 @@ import (
 type RoomRepository interface {
 	Create(room *models.Room) error
 	GetByID(id string) (*models.Room, error)
-	GetByNumber(number string) (*models.Room, error)
-	GetAll() ([]*models.Room, error)
-	GetByType(roomType models.RoomType) ([]*models.Room, error)
 	Update(room *models.Room) error
-	Delete(id string) error
 
 	// Availability queries
 	GetAvailableRooms(checkIn, checkOut time.Time, roomType *models.RoomType) ([]*models.Room, error)

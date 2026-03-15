@@ -14,14 +14,3 @@ type Book struct {
 	Stock     int       `json:"stock"`
 	CreatedAt time.Time `json:"created_at"`
 }
-
-// BookQuery represents search/filter criteria for books.
-// Used by Builder pattern for complex queries.
-type BookQuery struct {
-	Title     string
-	Author    string
-	Genre     string
-	MinPrice  float64
-	MaxPrice  float64
-	InStock   bool
-}

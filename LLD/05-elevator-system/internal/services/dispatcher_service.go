@@ -27,21 +27,7 @@ type dispatchRequest struct {
 	response chan error
 }
 
-var (
-	dispatcherInstance *DispatcherService
-	dispatcherOnce     sync.Once
-)
-
-// GetDispatcher returns the singleton dispatcher instance (optional use).
-// Singleton Pattern: Ensures single building controller per process.
-func GetDispatcher(building *models.Building, strategy interfaces.SchedulingStrategy) *DispatcherService {
-	dispatcherOnce.Do(func() {
-		dispatcherInstance = NewDispatcherService(building, strategy)
-	})
-	return dispatcherInstance
-}
-
-// NewDispatcherService creates a new dispatcher (for testing).
+// NewDispatcherService creates a new dispatcher.
 func NewDispatcherService(building *models.Building, strategy interfaces.SchedulingStrategy) *DispatcherService {
 	return &DispatcherService{
 		building:     building,

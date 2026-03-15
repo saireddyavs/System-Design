@@ -23,8 +23,8 @@ A library needs a system to manage books, members, lending, reservations, and ov
 | FR3 | Check out books (max 5 per member) | `LoanService.CheckOut` |
 | FR4 | Return books with overdue fine calculation | `LoanService.Return` |
 | FR5 | Reserve checked-out books | `ReservationService.Reserve` |
-| FR6 | Search by title, author, subject, ISBN | `SearchService.Search` |
-| FR7 | Due date reminders | `DueDateReminderService.SendRemindersForLoansDueWithin` |
+| FR6 | Search by title, author, subject, ISBN | `LibraryService.SearchBooks` |
+| FR7 | Due date reminders | `LoanService.SendRemindersForLoansDueWithin` |
 | FR8 | Overdue notifications | `FineService.ProcessOverdueLoans` |
 | FR9 | Reservation ready notifications | `LoanService.Return` → notifies first in queue |
 
@@ -71,8 +71,8 @@ A library needs a system to manage books, members, lending, reservations, and ov
 **Why**: Multiple notification channels (SMS, push) can be added without modifying `LoanService` or `FineService`. Loose coupling between event producers and consumers.
 
 ### Strategy Pattern
-**What**: `FineCalculator` interface with `PerDayFineCalculator` ($1/day) implementation  
-**Why**: Fine policies vary (flat rate, tiered, grace period). New strategies plug in without changing `FineService`.
+**What**: `PerDayFineCalculator` ($1/day) used by `FineService` and `LoanService`  
+**Why**: Fine policies vary (flat rate, tiered, grace period). Calculator is injectable for testing.
 
 ### Factory Pattern
 **What**: `LoanService.CheckOut` creates `Loan` with computed defaults (DueDate = IssueDate + 14 days)  
@@ -86,8 +86,8 @@ A library needs a system to manage books, members, lending, reservations, and ov
 
 | Principle | Application |
 |-----------|-------------|
-| **SRP** | `LoanService` = lending only; `FineService` = fines; `ReservationService` = reservations; `SearchService` = search |
-| **OCP** | New `NotificationService` implementations without modifying existing code. New `FineCalculator` strategies without touching `FineService`. |
+| **SRP** | `LoanService` = lending + reminders; `FineService` = fines; `ReservationService` = reservations; `LibraryService` = books, members, search |
+| **OCP** | New `NotificationService` implementations without modifying existing code. |
 | **LSP** | All notifiers (`ConsoleNotifier`, `EmailNotifier`) substitute for `NotificationService` without breaking clients |
 | **ISP** | Separate `BookRepository`, `MemberRepository`, `LoanRepository` — clients depend only on what they use |
 | **DIP** | Services depend on `interfaces.BookRepository`, not `*InMemoryBookRepo`. High-level modules don't depend on low-level modules. |
@@ -114,14 +114,14 @@ A library needs a system to manage books, members, lending, reservations, and ov
 ## 9. Interview Explanations
 
 ### 3-Minute Summary
-> "I built a Library Management System in Go using Clean Architecture. The core is separation of concerns: **models** define entities, **interfaces** define contracts, **repositories** handle data (in-memory, thread-safe), and **services** implement business logic. I used the **Repository pattern** for data access, **Observer** for notifications (email, console), and **Strategy** for fine calculation ($1/day). SOLID is applied throughout: each service has a single responsibility, new notification channels extend without modification (OCP), and services depend on interfaces (DIP). Key business rules: max 5 books per member, 14-day loan period, reservations for checked-out books with FIFO notification when returned."
+> "I built a Library Management System in Go using Clean Architecture. The core is separation of concerns: **models** define entities, **interfaces** define contracts, **repositories** handle data (in-memory, thread-safe), and **services** implement business logic. I used the **Repository pattern** for data access, **Observer** for notifications (email, console), and **PerDayFineCalculator** for fine calculation ($1/day). LibraryService handles books, members, and search; LoanService handles lending, returns, and due-date reminders. SOLID is applied throughout: each service has a single responsibility, new notification channels extend without modification (OCP), and services depend on interfaces (DIP). Key business rules: max 5 books per member, 14-day loan period, reservations for checked-out books with FIFO notification when returned."
 
 ### 10-Minute Deep Dive
-> "Let me walk through the architecture. **Models** (Book, Member, Loan, Reservation, Fine) are pure data. **Interfaces** define the contracts: `BookRepository`, `NotificationService`, `FineCalculator`. Services receive these via constructor injection.
+> "Let me walk through the architecture. **Models** (Book, Member, Loan, Reservation, Fine) are pure data. **Interfaces** define the contracts: `BookRepository`, `NotificationService`, `NotifyBroadcaster`. Services receive these via constructor injection.
 >
-> **LoanService** handles checkout and return. On checkout, it validates book availability and member limit, creates a Loan with 14-day due date, decrements available copies, and increments member's borrowed count. On return, it reverses those, creates a Fine if overdue using the injected `FineCalculator`, and notifies the first person in the reservation queue via `NotifyBroadcaster`.
+> **LoanService** handles checkout and return. On checkout, it validates book availability and member limit, creates a Loan with 14-day due date, decrements available copies, and increments member's borrowed count. On return, it reverses those, creates a Fine if overdue using the injected `PerDayFineCalculator`, and notifies the first person in the reservation queue via `NotifyBroadcaster`.
 >
-> **FineService** has a `ProcessOverdueLoans` method typically called by a cron job. It finds overdue loans, creates fines using the Strategy, and sends notifications. The **Strategy pattern** lets us swap PerDayFineCalculator for a FlatRateCalculator without changing FineService.
+> **FineService** has a `ProcessOverdueLoans` method typically called by a cron job. It finds overdue loans, creates fines using PerDayFineCalculator, and sends notifications.
 >
 > **ReservationService** only allows reservations when a book has no available copies. Reservations are FIFO; when a book is returned, `LoanService.Return` notifies the first pending reservation.
 >

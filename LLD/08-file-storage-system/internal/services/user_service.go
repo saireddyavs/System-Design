@@ -44,13 +44,6 @@ func (s *UserService) GetUser(id string) (*models.User, error) {
 	return s.userRepo.GetByID(id)
 }
 
-// GetUserByEmail retrieves a user by email.
-func (s *UserService) GetUserByEmail(email string) (*models.User, error) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.userRepo.GetByEmail(email)
-}
-
 // CheckQuota verifies if user has enough storage for the given size.
 func (s *UserService) CheckQuota(userID string, additionalSize int64) (bool, error) {
 	user, err := s.userRepo.GetByID(userID)

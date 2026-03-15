@@ -60,7 +60,7 @@ Design and implement a parking lot system that:
         ▼                                    ▼
 ┌─────────────────┐                 ┌──────────────────┐
 │ ParkingService  │                 │     Ticket       │
-│ FeeService      │                 │                  │
+│ (park + fees)   │                 │                  │
 └─────────────────┘                 └──────────────────┘
 ```
 
@@ -73,8 +73,7 @@ Design and implement a parking lot system that:
 | **ParkingLevel** | Collection of spots, availability queries |
 | **ParkingLot** | Singleton; manages levels |
 | **Ticket** | Links vehicle, spot, entry time |
-| **ParkingService** | Orchestrates park/unpark, ticket management |
-| **FeeService** | Calculates fees via strategy |
+| **ParkingService** | Orchestrates park/unpark, ticket management, fee calculation |
 
 ---
 
@@ -90,13 +89,12 @@ lot := models.GetInstance()
 ```
 
 ### 5.2 Strategy
-**Where:** Spot allocation (`ParkingStrategy`), Fee calculation (`FeeCalculator`)  
+**Where:** Spot allocation (`ParkingStrategy`), Fee calculation (`HourlyFeeStrategy`)  
 **Why:** Swap algorithms without changing clients.  
-**How:** Interfaces with multiple implementations (NearestSpotStrategy, HourlyFeeStrategy).
+**How:** `ParkingStrategy` interface; `HourlyFeeStrategy` for fees (injected into ParkingService).
 
 ```go
-ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy())
-fs := services.NewFeeService(strategies.NewHourlyFeeStrategy())
+ps := services.NewParkingService(lot, strategies.NewNearestSpotStrategy(), strategies.NewHourlyFeeStrategy())
 ```
 
 ### 5.3 Factory
@@ -109,9 +107,9 @@ car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 ```
 
 ### 5.4 Dependency Injection
-**Where:** `ParkingService`, `FeeService`  
+**Where:** `ParkingService`  
 **Why:** Testability and flexibility.  
-**How:** Constructors accept interfaces (strategy, calculator).
+**How:** Constructor accepts `ParkingStrategy` interface and `HourlyFeeStrategy`.
 
 ---
 
@@ -119,11 +117,11 @@ car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 
 | Principle | Application |
 |-----------|-------------|
-| **SRP** | `ParkingSpot` manages spot state; `ParkingService` orchestrates operations; `FeeService` only calculates fees |
-| **OCP** | New vehicle types via `NewVehicle`; new strategies via `ParkingStrategy`/`FeeCalculator` interfaces |
+| **SRP** | `ParkingSpot` manages spot state; `ParkingService` orchestrates park/unpark and fee calculation |
+| **OCP** | New vehicle types via `NewVehicle`; new strategies via `ParkingStrategy` interface |
 | **LSP** | All vehicles implement `Vehicle`; all strategies implement their interfaces |
-| **ISP** | `ParkingStrategy` has only `FindSpot`; `FeeCalculator` has only `Calculate` |
-| **DIP** | Services depend on `ParkingStrategy` and `FeeCalculator` interfaces, not concrete types |
+| **ISP** | `ParkingStrategy` has only `FindSpot` |
+| **DIP** | ParkingService depends on `ParkingStrategy` interface, not concrete types |
 
 ---
 
@@ -141,17 +139,14 @@ car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 │   │   ├── parking_lot.go  # Singleton lot
 │   │   └── ticket.go       # Ticket model
 │   ├── interfaces/
-│   │   ├── parking_strategy.go
-│   │   └── fee_calculator.go
+│   │   └── parking_strategy.go
 │   ├── services/
-│   │   ├── parking_service.go
-│   │   └── fee_service.go
+│   │   └── parking_service.go
 │   └── strategies/
 │       ├── nearest_spot_strategy.go
 │       └── hourly_fee_strategy.go
 ├── tests/
 │   ├── parking_service_test.go
-│   ├── fee_service_test.go
 │   ├── vehicle_test.go
 │   └── nearest_spot_strategy_test.go
 ├── go.mod
@@ -221,9 +216,9 @@ go test ./tests/... -cover
 
 > "I designed a multi-level parking lot with spot sizes (Small, Medium, Large) and vehicle types (Motorcycle, Car, Bus). Spots can hold vehicles of their size or smaller.
 >
-> I used a **Singleton** for the ParkingLot, **Strategy** for spot allocation (e.g., nearest-first) and fee calculation (e.g., hourly), and a **Factory** for creating vehicles. Services depend on interfaces for testability.
+> I used a **Singleton** for the ParkingLot, **Strategy** for spot allocation (e.g., nearest-first) and fee calculation (HourlyFeeStrategy), and a **Factory** for creating vehicles. ParkingService handles park/unpark and fee calculation.
 >
-> The system is **thread-safe** with RWMutex. Park finds a spot via the strategy, assigns the vehicle, and returns a ticket. Unpark accepts ticket ID or license plate, frees the spot, and returns the vehicle. Fees are calculated by the FeeService using the injected calculator."
+> The system is **thread-safe** with RWMutex. Park finds a spot via the strategy, assigns the vehicle, and returns a ticket. Unpark accepts ticket ID or license plate, frees the spot, and returns the vehicle. Fees are calculated by ParkingService.CalculateFee using the injected HourlyFeeStrategy."
 
 ### 10-Minute Version
 
@@ -235,12 +230,12 @@ go test ./tests/... -cover
 >
 > **Patterns:**
 > - **Singleton** for ParkingLot with sync.Once.
-> - **Strategy** for ParkingStrategy (FindSpot) and FeeCalculator (Calculate). Implementations: NearestSpotStrategy, HourlyFeeStrategy.
+> - **Strategy** for ParkingStrategy (FindSpot) and HourlyFeeStrategy (Calculate). ParkingService handles both park/unpark and fee calculation.
 > - **Factory** for NewVehicle(type, plate).
-> - **DIP:** ParkingService and FeeService take interfaces.
+> - **DIP:** ParkingService takes ParkingStrategy interface and HourlyFeeStrategy.
 >
 > **SOLID:** SRP per component, OCP for new vehicles/strategies, LSP for Vehicle implementations, ISP for small interfaces, DIP for services.
 >
 > **Concurrency:** RWMutex on lot, level, spot, and service. Read locks for availability, write locks for park/unpark.
 >
-> **Flow:** Park → strategy finds spot → spot.Park() → create ticket. Unpark → lookup ticket → spot.Unpark() → return vehicle. FeeService.CalculateFee(ticket) uses duration and vehicle type."
+> **Flow:** Park → strategy finds spot → spot.Park() → create ticket. Unpark → lookup ticket → spot.Unpark() → return vehicle. ParkingService.CalculateFee(ticket) uses duration and vehicle type."

@@ -12,18 +12,15 @@ const (
 type MessageType string
 
 const (
-	MessageTypeText  MessageType = "text"
-	MessageTypeImage MessageType = "image"
-	MessageTypeFile  MessageType = "file"
+	MessageTypeText MessageType = "text"
 )
 
 // MessageStatus represents delivery/read status
 type MessageStatus string
 
 const (
-	MessageStatusSent      MessageStatus = "sent"
-	MessageStatusDelivered MessageStatus = "delivered"
-	MessageStatusRead      MessageStatus = "read"
+	MessageStatusSent MessageStatus = "sent"
+	MessageStatusRead MessageStatus = "read"
 )
 
 // ChatRoomType represents one-on-one vs group chat

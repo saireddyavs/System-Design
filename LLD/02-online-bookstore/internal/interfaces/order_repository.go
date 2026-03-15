@@ -9,5 +9,4 @@ type OrderRepository interface {
 	GetByID(id string) (*models.Order, error)
 	GetByUserID(userID string) ([]*models.Order, error)
 	Update(order *models.Order) error
-	GetAll() ([]*models.Order, error)
 }

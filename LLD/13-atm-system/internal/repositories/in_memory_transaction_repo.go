@@ -1,16 +1,11 @@
 package repositories
 
 import (
-	"atm-system/internal/models"
 	"atm-system/internal/interfaces"
+	"atm-system/internal/models"
 	"context"
-	"errors"
-	"sort"
 	"sync"
-	"time"
 )
-
-var ErrTransactionNotFound = errors.New("transaction not found")
 
 // InMemoryTransactionRepository implements TransactionRepository (Repository Pattern)
 type InMemoryTransactionRepository struct {
@@ -55,38 +50,5 @@ func (r *InMemoryTransactionRepository) GetByAccountID(ctx context.Context, acco
 			result = append(result, tx)
 		}
 	}
-	return result, nil
-}
-
-func (r *InMemoryTransactionRepository) GetByID(ctx context.Context, id string) (*models.Transaction, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	tx, ok := r.transactions[id]
-	if !ok {
-		return nil, ErrTransactionNotFound
-	}
-	return tx, nil
-}
-
-func (r *InMemoryTransactionRepository) GetByAccountIDAndDateRange(ctx context.Context, accountID string, from, to time.Time) ([]*models.Transaction, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	ids, ok := r.byAccount[accountID]
-	if !ok {
-		return []*models.Transaction{}, nil
-	}
-	result := make([]*models.Transaction, 0)
-	for _, id := range ids {
-		tx, ok := r.transactions[id]
-		if !ok {
-			continue
-		}
-		if !tx.Timestamp.Before(from) && !tx.Timestamp.After(to) {
-			result = append(result, tx)
-		}
-	}
-	sort.Slice(result, func(i, j int) bool {
-		return result[i].Timestamp.After(result[j].Timestamp)
-	})
 	return result, nil
 }

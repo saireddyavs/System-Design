@@ -38,13 +38,3 @@ func (r *InMemoryUserRepository) GetByID(id string) (*models.User, error) {
 	return u, nil
 }
 
-func (r *InMemoryUserRepository) GetByEmail(email string) (*models.User, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	for _, u := range r.users {
-		if u.Email == email {
-			return u, nil
-		}
-	}
-	return nil, ErrUserNotFound
-}

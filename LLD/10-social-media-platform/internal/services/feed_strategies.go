@@ -19,10 +19,6 @@ func (s *ChronologicalFeedStrategy) Sort(items []*interfaces.FeedItem) []*interf
 	return result
 }
 
-func (s *ChronologicalFeedStrategy) Name() string {
-	return "chronological"
-}
-
 // PopularityFeedStrategy sorts feed by engagement score (likes + comments).
 // Strategy pattern: alternative sorting algorithm
 type PopularityFeedStrategy struct{}
@@ -39,8 +35,4 @@ func (s *PopularityFeedStrategy) Sort(items []*interfaces.FeedItem) []*interface
 		return result[i].Post.CreatedAt.After(result[j].Post.CreatedAt)
 	})
 	return result
-}
-
-func (s *PopularityFeedStrategy) Name() string {
-	return "popularity"
 }

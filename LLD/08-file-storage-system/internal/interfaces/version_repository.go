@@ -8,5 +8,4 @@ type VersionRepository interface {
 	GetByFileID(fileID string) ([]*models.Version, error)
 	GetByFileAndVersion(fileID string, versionNumber int) (*models.Version, error)
 	DeleteByFileID(fileID string) error
-	GetLatestVersion(fileID string) (*models.Version, error)
 }

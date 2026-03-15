@@ -110,37 +110,6 @@ func (r *InMemoryPostRepository) DeletePost(id string) error {
 	return nil
 }
 
-func (r *InMemoryPostRepository) GetPostsByAuthor(authorID string, limit, offset int) ([]*models.Post, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	postIDs, exists := r.byAuthor[authorID]
-	if !exists {
-		return []*models.Post{}, nil
-	}
-
-	// Sort by creation time (newest first) - we need to get posts and sort
-	var posts []*models.Post
-	for _, pid := range postIDs {
-		if p, ok := r.posts[pid]; ok {
-			posts = append(posts, p)
-		}
-	}
-	sort.Slice(posts, func(i, j int) bool {
-		return posts[i].CreatedAt.After(posts[j].CreatedAt)
-	})
-
-	start := offset
-	if start > len(posts) {
-		return []*models.Post{}, nil
-	}
-	end := start + limit
-	if end > len(posts) {
-		end = len(posts)
-	}
-	return posts[start:end], nil
-}
-
 func (r *InMemoryPostRepository) GetPostsByAuthors(authorIDs []string, limit, offset int) ([]*models.Post, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()

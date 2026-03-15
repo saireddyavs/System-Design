@@ -40,7 +40,6 @@ func main() {
 	// Initialize components
 	templateEngine := services.NewDefaultTemplateEngine()
 	templateSvc := services.NewTemplateService(templateRepo, templateEngine)
-	preferenceSvc := services.NewPreferenceService(userRepo)
 	rateLimiter := middleware.DefaultRateLimiter()
 
 	// Create senders with retry decorator (Strategy + Decorator)
@@ -59,7 +58,6 @@ func main() {
 		userRepo,
 		senderMap,
 		templateSvc,
-		preferenceSvc,
 		rateLimiter,
 	)
 

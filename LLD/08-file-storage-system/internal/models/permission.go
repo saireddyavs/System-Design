@@ -30,8 +30,3 @@ func (p *Permission) CanView() bool {
 func (p *Permission) CanEdit() bool {
 	return p.Level == PermissionEdit || p.Level == PermissionOwner
 }
-
-// IsOwner returns true if this permission grants ownership.
-func (p *Permission) IsOwner() bool {
-	return p.Level == PermissionOwner
-}

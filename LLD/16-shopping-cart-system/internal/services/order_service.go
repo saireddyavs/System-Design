@@ -47,14 +47,6 @@ func NewOrderService(repo interfaces.OrderRepository) *OrderService {
 	return &OrderService{repo: repo}
 }
 
-func (s *OrderService) Create(order *models.Order) error {
-	return s.repo.Create(order)
-}
-
-func (s *OrderService) GetByID(id string) (*models.Order, error) {
-	return s.repo.GetByID(id)
-}
-
 func (s *OrderService) GetByUserID(userID string) ([]*models.Order, error) {
 	return s.repo.GetByUserID(userID)
 }

@@ -46,8 +46,6 @@ func main() {
 		MemberRepo:     memberRepo,
 		BookRepo:       bookRepo,
 	})
-	searchSvc := services.NewSearchService(bookRepo)
-	reminderSvc := services.NewDueDateReminderService(loanRepo, memberRepo, bookRepo, notifMgr)
 
 	// Demo flow
 	fmt.Println("=== Library Management System Demo ===")
@@ -64,7 +62,7 @@ func main() {
 	fmt.Printf("Registered members: %s, %s\n\n", member1.Name, member2.Name)
 
 	// Search
-	results, _ := searchSvc.Search(services.SearchCriteria{Author: "Martin"})
+	results, _ := librarySvc.SearchBooks(services.SearchCriteria{Author: "Martin"})
 	fmt.Printf("Search by author 'Martin': found %d book(s)\n", len(results))
 	for _, b := range results {
 		fmt.Printf("  - %s by %s\n", b.Title, b.Author)
@@ -89,7 +87,7 @@ func main() {
 	_, _ = fineSvc.ProcessOverdueLoans()
 
 	// Due date reminders
-	count, _ := reminderSvc.SendRemindersForLoansDueWithin(14 * 24 * time.Hour)
+	count, _ := loanSvc.SendRemindersForLoansDueWithin(14 * 24 * time.Hour)
 	fmt.Printf("Sent %d due date reminder(s)\n\n", count)
 
 	fmt.Println("=== Demo Complete ===")

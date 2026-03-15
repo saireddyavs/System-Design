@@ -51,19 +51,6 @@ func (r *InMemoryPermissionRepo) GetByFileID(fileID string) ([]*models.Permissio
 	return result, nil
 }
 
-func (r *InMemoryPermissionRepo) GetByUserID(userID string) ([]*models.Permission, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	ids := r.byUser[userID]
-	var result []*models.Permission
-	for _, id := range ids {
-		if p, exists := r.permissions[id]; exists {
-			result = append(result, p)
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryPermissionRepo) GetByFileAndUser(fileID, userID string) (*models.Permission, error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
@@ -74,33 +61,6 @@ func (r *InMemoryPermissionRepo) GetByFileAndUser(fileID, userID string) (*model
 		}
 	}
 	return nil, ErrPermissionNotFound
-}
-
-func (r *InMemoryPermissionRepo) GetInheritedPermissions(fileID string) ([]*models.Permission, error) {
-	// Simplified: return direct permissions. Full implementation would walk parent hierarchy.
-	return r.GetByFileID(fileID)
-}
-
-func (r *InMemoryPermissionRepo) Update(permission *models.Permission) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if _, exists := r.permissions[permission.ID]; !exists {
-		return ErrPermissionNotFound
-	}
-	r.permissions[permission.ID] = permission
-	return nil
-}
-
-func (r *InMemoryPermissionRepo) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	p, exists := r.permissions[id]
-	if !exists {
-		return ErrPermissionNotFound
-	}
-	delete(r.permissions, id)
-	r.removeFromIndex(p.FileID, p.UserID, id)
-	return nil
 }
 
 func (r *InMemoryPermissionRepo) DeleteByFileAndUser(fileID, userID string) error {

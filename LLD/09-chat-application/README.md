@@ -96,7 +96,7 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 **Why**: ChatRoom acts as mediator between members—adding/removing members, routing messages. No direct member-to-member coupling for room management.
 
 ### Strategy Pattern
-**Where**: `DeliveryStrategy` (DirectDelivery, BroadcastDelivery)
+**Where**: `DeliveryStrategy` (DirectDelivery)
 **Why**: Swappable delivery algorithms. Can add new strategies (e.g., priority delivery, rate-limited) without changing broker code. Open/Closed Principle.
 
 ### Repository Pattern
@@ -114,7 +114,7 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 | Principle | Implementation |
 |-----------|----------------|
 | **S - Single Responsibility** | `AuthService` (auth only), `UserService` (user ops), `MessageService` (messaging), `ChatService` (rooms). Each repository handles one entity type. |
-| **O - Open/Closed** | `DeliveryStrategy` interface—add new strategies without modifying broker. Repository interfaces allow new implementations. |
+| **O - Open/Closed** | `DeliveryStrategy` interface (DirectDelivery)—add new strategies without modifying broker. Repository interfaces allow new implementations. |
 | **L - Liskov Substitution** | `InMemoryBroker` substitutes for `MessageBroker`; any `Repository` impl can substitute its interface. |
 | **I - Interface Segregation** | Small, focused interfaces: `UserRepository`, `MessageRepository`, `ChatRoomRepository`, `MessageBroker`. No fat interfaces. |
 | **D - Dependency Inversion** | Services depend on abstractions (interfaces), not concrete implementations. `main.go` wires concrete repos. |
@@ -149,11 +149,11 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 ## 7. Interview Explanations
 
 ### 3-Minute Pitch
-"This is a chat application with clean architecture. Users register and authenticate. We support 1:1 and group chats with a 100-member limit. Messages are persisted and delivered in real-time via an Observer pattern— subscribers get a channel when they connect, and the broker sends messages to those channels. Offline users get messages queued. We use Repository pattern for data access, Strategy for delivery (direct vs broadcast), and Factory for message creation. All shared state is protected by mutexes; each user has their own channel for lock-free delivery. SOLID principles are applied throughout—services depend on interfaces, not implementations."
+"This is a chat application with clean architecture. Users register and authenticate. We support 1:1 and group chats with a 100-member limit. Messages are persisted and delivered in real-time via an Observer pattern—subscribers get a channel when they connect, and the broker sends messages to those channels. Offline users get messages queued. We use Repository pattern for data access, Strategy for delivery (DirectDelivery), and Factory for message creation. All shared state is protected by mutexes; each user has their own channel for lock-free delivery. SOLID principles are applied throughout—services depend on interfaces, not implementations."
 
 ### 10-Minute Deep Dive
 1. **Architecture**: Clean architecture with models, interfaces, services, repositories. Dependency injection in main.
-2. **Real-time**: MessageBroker implements Observer. Subscribe returns `<-chan *Message`. Publish uses Strategy to deliver. Online users get immediate delivery; offline queue.
+2. **Real-time**: MessageBroker implements Observer. Subscribe returns `<-chan *Message`. Publish uses DirectDelivery strategy. Online users get immediate delivery; offline queue.
 3. **Concurrency**: RWMutex for repositories; broker uses per-user channels; non-blocking send in broker to avoid blocking on slow consumers.
 4. **Business rules**: ChatService enforces add/remove (creator/admin only), max 100 members, leave room. MessageService validates room membership before send.
 5. **Testing**: Unit tests for auth (register, login, duplicates), chat (create room, add member, leave, permissions), messaging (send, history, read receipts, real-time, concurrent sends).
@@ -169,7 +169,7 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 4. **Rate limiting**: Per-user message rate limits
 5. **Typing indicators**: Extend broker with typing events
 6. **Message reactions**: Extend Message model with reactions map
-7. **File attachments**: S3 for MessageTypeFile/Image
+7. **File attachments**: S3 for file/image message types (extend MessageType)
 8. **API layer**: HTTP/gRPC handlers with middleware (auth, logging)
 9. **Caching**: Redis for online status, recent messages
 10. **Metrics**: Prometheus for message throughput, latency

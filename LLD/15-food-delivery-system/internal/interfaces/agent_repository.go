@@ -11,5 +11,4 @@ type AgentRepository interface {
 	GetAll() ([]*models.DeliveryAgent, error)
 	GetAvailableAgents() ([]*models.DeliveryAgent, error)
 	Update(agent *models.DeliveryAgent) error
-	UpdateLocation(agentID string, location models.Location) error
 }

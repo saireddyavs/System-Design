@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"notification-system/internal/interfaces"
-	"notification-system/internal/models"
 )
 
 // TemplateService handles template operations
@@ -19,11 +18,6 @@ func NewTemplateService(repo interfaces.TemplateRepository, engine interfaces.Te
 		repo:   repo,
 		engine: engine,
 	}
-}
-
-// GetTemplate retrieves a template by ID
-func (s *TemplateService) GetTemplate(ctx context.Context, id string) (*models.Template, error) {
-	return s.repo.GetByID(ctx, id)
 }
 
 // RenderTemplate renders a template with the given variables

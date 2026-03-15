@@ -19,7 +19,7 @@ var (
 type FineService struct {
 	fineRepo       interfaces.FineRepository
 	loanRepo       interfaces.LoanRepository
-	fineCalculator interfaces.FineCalculator
+	fineCalculator *PerDayFineCalculator
 	notifier       interfaces.NotifyBroadcaster
 	memberRepo     interfaces.MemberRepository
 	bookRepo       interfaces.BookRepository
@@ -29,7 +29,7 @@ type FineService struct {
 type FineServiceConfig struct {
 	FineRepo       interfaces.FineRepository
 	LoanRepo       interfaces.LoanRepository
-	FineCalculator interfaces.FineCalculator
+	FineCalculator *PerDayFineCalculator
 	Notifier       interfaces.NotifyBroadcaster
 	MemberRepo     interfaces.MemberRepository
 	BookRepo       interfaces.BookRepository

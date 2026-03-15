@@ -8,8 +8,6 @@ import (
 type NotificationRepository interface {
 	Create(notification *models.Notification) error
 	GetByUserID(userID string, limit, offset int) ([]*models.Notification, error)
-	MarkAsRead(notificationID string) error
-	GetUnreadCount(userID string) (int, error)
 }
 
 // NotificationObserver defines the observer interface (Observer pattern).
@@ -20,7 +18,5 @@ type NotificationObserver interface {
 
 // NotificationPublisher allows components to publish notification events.
 type NotificationPublisher interface {
-	Subscribe(observer NotificationObserver)
-	Unsubscribe(observer NotificationObserver)
 	Publish(notification *models.Notification)
 }

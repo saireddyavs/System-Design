@@ -100,18 +100,6 @@ func (r *InMemoryMessageRepository) Update(message *models.Message) error {
 	return nil
 }
 
-func (r *InMemoryMessageRepository) UpdateStatus(messageID string, status models.MessageStatus) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	msg, exists := r.messages[messageID]
-	if !exists {
-		return ErrNotFound
-	}
-	msg.Status = status
-	return nil
-}
-
 func (r *InMemoryMessageRepository) MarkAsRead(messageID string, userID string) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -125,11 +113,4 @@ func (r *InMemoryMessageRepository) MarkAsRead(messageID string, userID string) 
 	}
 	msg.Status = models.MessageStatusRead
 	return nil
-}
-
-// GetMessageCount returns total messages for testing
-func (r *InMemoryMessageRepository) GetMessageCount() int {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	return len(r.messages)
 }

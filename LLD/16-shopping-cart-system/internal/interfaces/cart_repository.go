@@ -4,11 +4,8 @@ import "shopping-cart-system/internal/models"
 
 // CartRepository defines data access for carts (Repository pattern)
 type CartRepository interface {
-	GetByID(id string) (*models.Cart, error)
 	GetByUserID(userID string) (*models.Cart, error)
 	Create(cart *models.Cart) error
 	Update(cart *models.Cart) error
 	UpdateStatus(cartID string, status models.CartStatus) error
-	GetAbandonedCarts(userID string) ([]*models.Cart, error)
-	GetAllAbandonedCarts() ([]*models.Cart, error)
 }

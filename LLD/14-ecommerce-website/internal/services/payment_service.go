@@ -40,10 +40,3 @@ func (s *PaymentService) ProcessPayment(ctx context.Context, payment *models.Pay
 	return processor.Process(ctx, payment)
 }
 
-// RegisterProcessor adds or replaces a payment processor
-func (s *PaymentService) RegisterProcessor(processor interfaces.PaymentProcessor) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.processors[processor.GetMethod()] = processor
-}
-

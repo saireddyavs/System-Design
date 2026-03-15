@@ -16,7 +16,7 @@ Design and implement a complete e-commerce shopping cart system that supports pr
 - **Checkout**: Validate cart, apply discount, calculate tax, process payment
 - **Order Confirmation**: Order summary, status tracking
 - **Stock Validation**: During add-to-cart and checkout
-- **Cart Abandonment Tracking**: Track carts left without checkout
+- **Cart Event Observers**: Notify on cart add/update/remove for logging
 
 ### Non-Functional Requirements
 - Thread-safe (sync.RWMutex)
@@ -161,7 +161,7 @@ Design and implement a complete e-commerce shopping cart system that supports pr
 | **Strategy** | Discount (%, Flat, BOGO) | Different discount algorithms without changing checkout logic. Open/Closed: add new coupon types without modifying existing code. |
 | **Strategy** | Tax (Flat, State-based) | Tax rules vary by jurisdiction. Swap calculator without touching checkout. |
 | **Strategy** | Payment (Card, PayPal, Wallet) | Payment gateways differ. Pluggable processors. |
-| **Observer** | Cart events | Decouple cart operations from side effects (analytics, abandonment tracking, notifications). CartService doesn't know who listens. |
+| **Observer** | Cart events | Decouple cart operations from side effects (analytics, notifications). CartService doesn't know who listens. |
 | **Factory** | OrderFactory | Encapsulates order creation from cart. Ensures consistent order structure. |
 | **Repository** | All data access | Abstracts storage. Swap in-memory for DB without changing services. |
 | **Builder** | CheckoutSummaryBuilder | Stepwise construction of complex checkout result. Fluent API. |
@@ -183,7 +183,7 @@ Design and implement a complete e-commerce shopping cart system that supports pr
 ## 6. Interview Explanations
 
 ### 3-Minute Pitch
-> "I designed a shopping cart system with clean architecture. Core entities are Product, User, Cart, CartItem, Order, and Coupon. The checkout flow validates cart and stock, applies discounts via Strategy pattern, calculates tax, processes payment, decrements stock, creates order, and clears cart. I used Strategy for discounts (percentage, flat, BOGO), tax, and payment so we can add new types without changing checkout logic. Observer pattern notifies on cart events for abandonment tracking. Repositories abstract data access for testability. All repositories use sync.RWMutex for thread safety."
+> "I designed a shopping cart system with clean architecture. Core entities are Product, User, Cart, CartItem, Order, and Coupon. The checkout flow validates cart and stock, applies discounts via Strategy pattern, calculates tax, processes payment, decrements stock, creates order, and clears cart. I used Strategy for discounts (percentage, flat, BOGO), tax, and payment so we can add new types without changing checkout logic. Observer pattern notifies on cart events. Repositories abstract data access for testability. All repositories use sync.RWMutex for thread safety."
 
 ### 10-Minute Deep Dive
 > "**Architecture**: Layered—models, interfaces, services, repositories, strategies. Services orchestrate; repositories persist; strategies encapsulate algorithms.

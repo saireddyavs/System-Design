@@ -40,8 +40,7 @@ Design a system that allows airlines to manage flights, seats, passengers, and b
 
 | Entity | Key Fields | Relationships |
 |--------|------------|---------------|
-| **Airport** | Code (IATA), Name, City, Country | Referenced by Flight (Origin/Destination) |
-| **Flight** | ID, FlightNumber, Origin, Destination, DepartureTime, ArrivalTime, Aircraft, Seats, Status | Has many Seats, has many Bookings |
+| **Flight** | ID, FlightNumber, Origin, Destination (IATA codes), DepartureTime, ArrivalTime, Aircraft, Seats, Status | Has many Seats, has many Bookings |
 | **Seat** | ID, FlightID, SeatNumber, Row, Column, Class, Status, Price | Belongs to Flight, referenced by Booking |
 | **Passenger** | ID, Name, Email, Phone, PassportNumber, DateOfBirth | Has many Bookings |
 | **Booking** | ID, PassengerID, FlightID, SeatIDs, TotalAmount, Status, BookingRef | Belongs to Passenger & Flight |
@@ -50,13 +49,11 @@ Design a system that allows airlines to manage flights, seats, passengers, and b
 
 ## 3. Seat Assignment Algorithm
 
-Three strategies (Strategy Pattern):
+Two strategies (Strategy Pattern):
 
 1. **AutoAssignFirstAvailable**: Assigns first N available seats in order. O(n) scan.
 
 2. **WindowPreferenceAssignment**: Partitions available seats into window (A, F) and others. Assigns window seats first, then fills with remaining.
-
-3. **AislePreferenceAssignment**: Partitions into aisle (C, D) and others. Assigns aisle first.
 
 **Flow**:
 ```
@@ -79,12 +76,6 @@ MarkSeatsBooked(flightID, seatIDs)
 | Business | 2.5x | 32 kg |
 | First | 5.0x | 40 kg |
 
-**DemandBasedPricing** (optional wrapper): Applies occupancy-based multiplier:
-- 0-50% full: 1.0x
-- 50-80% full: 1.1x
-- 80-90% full: 1.2x
-- 90%+ full: 1.4x
-
 ---
 
 ## 5. Refund Policy
@@ -101,8 +92,8 @@ MarkSeatsBooked(flightID, seatIDs)
 
 | Pattern | Where | Why |
 |---------|-------|-----|
-| **Strategy** | Seat assignment (Auto/Window/Aisle) | Different algorithms for seat selection; swappable at runtime without changing client code. |
-| **Strategy** | Pricing (ClassMultiplier, DemandBased) | Multiple pricing models; easy to add new strategies (e.g., seasonal, loyalty). |
+| **Strategy** | Seat assignment (Auto/Window) | Different algorithms for seat selection; swappable at runtime without changing client code. |
+| **Strategy** | Pricing (ClassMultiplier) | Class-based pricing; easy to add new strategies (e.g., seasonal, loyalty). |
 | **Factory** | BookingFactory | Centralizes booking creation with ID/ref generation; encapsulates complex object construction. |
 | **Observer** | BookingNotifier + EmailBookingObserver | Decouples booking events from notifications; add SMS, push, analytics without modifying core logic. |
 | **Repository** | FlightRepository, BookingRepository | Abstracts data access; swap in-memory for PostgreSQL without changing services. |

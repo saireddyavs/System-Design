@@ -118,7 +118,7 @@ type StorageProvider interface {
     Download(path string) ([]byte, error)
     Delete(path string) error
 }
-// Implementations: LocalStorageProvider, S3StorageProvider (future)
+// Implementations: LocalStorageProvider; S3StorageProvider (future)
 ```
 
 ### Observer - Share Notifications
@@ -128,8 +128,7 @@ type ShareObserver interface {
     OnFileShared(file *File, permission *Permission)
     OnFolderShared(folder *Folder, permission *Permission)
 }
-// SharingService.RegisterObserver(observer)
-// On share: for _, obs := range observers { obs.OnFileShared(...) }
+// SharingService registers observers; on share, notifies all via OnFileShared/OnFolderShared
 ```
 
 ## 6. SOLID Principles Mapping

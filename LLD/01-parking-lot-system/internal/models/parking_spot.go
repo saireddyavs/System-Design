@@ -74,17 +74,3 @@ func (s *ParkingSpot) Unpark() (Vehicle, time.Duration) {
 	s.OccupiedAt = nil
 	return v, duration
 }
-
-// GetVehicle returns the currently parked vehicle (for read-only access).
-func (s *ParkingSpot) GetVehicle() Vehicle {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.Vehicle
-}
-
-// GetOccupiedAt returns when the spot was occupied.
-func (s *ParkingSpot) GetOccupiedAt() *time.Time {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.OccupiedAt
-}

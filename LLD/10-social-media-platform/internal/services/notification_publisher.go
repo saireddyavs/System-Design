@@ -21,23 +21,6 @@ func NewNotificationPublisher() *NotificationPublisherImpl {
 	}
 }
 
-func (p *NotificationPublisherImpl) Subscribe(observer interfaces.NotificationObserver) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	p.observers = append(p.observers, observer)
-}
-
-func (p *NotificationPublisherImpl) Unsubscribe(observer interfaces.NotificationObserver) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	for i, obs := range p.observers {
-		if obs == observer {
-			p.observers = append(p.observers[:i], p.observers[i+1:]...)
-			break
-		}
-	}
-}
-
 func (p *NotificationPublisherImpl) Publish(notification *models.Notification) {
 	p.mu.RLock()
 	observers := make([]interfaces.NotificationObserver, len(p.observers))

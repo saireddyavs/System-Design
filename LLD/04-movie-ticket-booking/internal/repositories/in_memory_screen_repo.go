@@ -38,14 +38,3 @@ func (r *InMemoryScreenRepository) GetByID(id string) (*models.Screen, error) {
 	return s, nil
 }
 
-func (r *InMemoryScreenRepository) GetByTheatreID(theatreID string) ([]*models.Screen, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Screen
-	for _, s := range r.screens {
-		if s.TheatreID == theatreID {
-			result = append(result, s)
-		}
-	}
-	return result, nil
-}

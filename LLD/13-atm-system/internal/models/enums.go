@@ -25,8 +25,6 @@ type TransactionStatus string
 const (
 	TransactionStatusPending   TransactionStatus = "PENDING"
 	TransactionStatusCompleted TransactionStatus = "COMPLETED"
-	TransactionStatusFailed    TransactionStatus = "FAILED"
-	TransactionStatusCancelled TransactionStatus = "CANCELLED"
 )
 
 // ATMState represents the current state of the ATM

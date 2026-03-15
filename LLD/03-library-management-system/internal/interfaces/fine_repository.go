@@ -9,5 +9,4 @@ type FineRepository interface {
 	Update(fine *models.Fine) error
 	GetByLoanID(loanID string) (*models.Fine, error)
 	GetPendingByMemberID(memberID string) ([]*models.Fine, error)
-	ListAll() ([]*models.Fine, error)
 }

@@ -52,23 +52,3 @@ func (r *InMemoryUserRepo) GetByEmail(email string) (*models.User, error) {
 	}
 	return nil, ErrUserNotFound
 }
-
-func (r *InMemoryUserRepo) Update(user *models.User) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if _, exists := r.users[user.ID]; !exists {
-		return ErrUserNotFound
-	}
-	r.users[user.ID] = user
-	return nil
-}
-
-func (r *InMemoryUserRepo) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if _, exists := r.users[id]; !exists {
-		return ErrUserNotFound
-	}
-	delete(r.users, id)
-	return nil
-}

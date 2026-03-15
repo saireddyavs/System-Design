@@ -71,13 +71,3 @@ func (r *InMemoryFineRepo) GetPendingByMemberID(memberID string) ([]*models.Fine
 	}
 	return result, nil
 }
-
-func (r *InMemoryFineRepo) ListAll() ([]*models.Fine, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	result := make([]*models.Fine, 0, len(r.fines))
-	for _, f := range r.fines {
-		result = append(result, f)
-	}
-	return result, nil
-}

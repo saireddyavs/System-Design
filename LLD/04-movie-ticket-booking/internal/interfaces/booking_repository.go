@@ -6,8 +6,6 @@ import "movie-ticket-booking/internal/models"
 type BookingRepository interface {
 	Create(booking *models.Booking) error
 	GetByID(id string) (*models.Booking, error)
-	GetByUserID(userID string) ([]*models.Booking, error)
-	GetByShowID(showID string) ([]*models.Booking, error)
 	Update(booking *models.Booking) error
 }
 
@@ -15,5 +13,4 @@ type BookingRepository interface {
 type UserRepository interface {
 	Create(user *models.User) error
 	GetByID(id string) (*models.User, error)
-	GetByEmail(email string) (*models.User, error)
 }

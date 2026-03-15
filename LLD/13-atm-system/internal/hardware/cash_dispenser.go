@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sort"
 )
 
 var (
@@ -99,14 +98,4 @@ func (d *GreedyCashDispenser) Dispense(ctx context.Context, amount float64, inve
 		Success:   true,
 		Dispensed: dispensed,
 	}, nil
-}
-
-// GetDenominationOrder returns denominations sorted for dispensing (for external use)
-func GetDenominationOrder() []models.Denomination {
-	sorted := make([]models.Denomination, len(denominationOrder))
-	copy(sorted, denominationOrder)
-	sort.Slice(sorted, func(i, j int) bool {
-		return sorted[i] > sorted[j]
-	})
-	return sorted
 }

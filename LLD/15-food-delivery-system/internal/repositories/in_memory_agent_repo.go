@@ -72,14 +72,3 @@ func (r *InMemoryAgentRepo) Update(agent *models.DeliveryAgent) error {
 	r.agents[agent.ID] = agent
 	return nil
 }
-
-func (r *InMemoryAgentRepo) UpdateLocation(agentID string, location models.Location) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	agent, exists := r.agents[agentID]
-	if !exists {
-		return ErrAgentNotFound
-	}
-	agent.UpdateLocation(location)
-	return nil
-}

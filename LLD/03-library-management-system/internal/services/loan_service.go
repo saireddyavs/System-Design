@@ -25,7 +25,7 @@ type LoanService struct {
 	loanRepo        interfaces.LoanRepository
 	reservationRepo interfaces.ReservationRepository
 	fineRepo        interfaces.FineRepository
-	fineCalculator  interfaces.FineCalculator
+	fineCalculator  *PerDayFineCalculator
 	notifier        interfaces.NotifyBroadcaster
 }
 
@@ -36,7 +36,7 @@ type LoanServiceConfig struct {
 	LoanRepo        interfaces.LoanRepository
 	ReservationRepo interfaces.ReservationRepository
 	FineRepo        interfaces.FineRepository
-	FineCalculator  interfaces.FineCalculator
+	FineCalculator  *PerDayFineCalculator
 	Notifier        interfaces.NotifyBroadcaster
 }
 
@@ -164,4 +164,40 @@ func (s *LoanService) notifyFirstReservation(book *models.Book) {
 		BookID:      book.ID,
 		Message:     "Your reserved book '" + book.Title + "' is now available. Please pick it up within 3 days.",
 	})
+}
+
+// SendRemindersForLoansDueWithin sends reminders for loans due within the given duration
+func (s *LoanService) SendRemindersForLoansDueWithin(within time.Duration) (int, error) {
+	deadline := time.Now().Add(within)
+	loans, err := s.loanRepo.GetLoansDueBefore(deadline)
+	if err != nil {
+		return 0, err
+	}
+
+	now := time.Now()
+	count := 0
+	for _, loan := range loans {
+		if loan.Status != models.LoanStatusActive {
+			continue
+		}
+		if now.After(loan.DueDate) {
+			continue // Skip overdue - handled by FineService
+		}
+		member, _ := s.memberRepo.GetByID(loan.MemberID)
+		book, _ := s.bookRepo.GetByID(loan.BookID)
+		if member == nil || book == nil {
+			continue
+		}
+		s.notifier.NotifyAll(interfaces.NotificationPayload{
+			Type:        interfaces.NotificationDueDateReminder,
+			MemberID:    member.ID,
+			MemberEmail: member.Email,
+			BookTitle:   book.Title,
+			BookID:      book.ID,
+			DueDate:     loan.DueDate,
+			Message:     "Reminder: Your book '" + book.Title + "' is due on " + loan.DueDate.Format("2006-01-02") + ". Please return it on time.",
+		})
+		count++
+	}
+	return count, nil
 }

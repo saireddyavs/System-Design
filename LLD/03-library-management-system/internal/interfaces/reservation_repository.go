@@ -9,5 +9,4 @@ type ReservationRepository interface {
 	Update(reservation *models.Reservation) error
 	GetPendingByBookID(bookID string) ([]*models.Reservation, error)
 	GetByMemberID(memberID string) ([]*models.Reservation, error)
-	ListAll() ([]*models.Reservation, error)
 }

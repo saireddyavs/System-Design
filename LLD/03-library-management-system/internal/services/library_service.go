@@ -4,6 +4,7 @@ import (
 	"errors"
 	"library-management-system/internal/interfaces"
 	"library-management-system/internal/models"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -54,18 +55,6 @@ func (s *LibraryService) AddBook(title, author, isbn, subject string, totalCopie
 	return book, nil
 }
 
-// RemoveBook removes a book by ID (only if no copies are checked out)
-func (s *LibraryService) RemoveBook(id string) error {
-	book, err := s.bookRepo.GetByID(id)
-	if err != nil {
-		return err
-	}
-	if book.AvailableCopies != book.TotalCopies {
-		return errors.New("cannot remove book: copies are still checked out")
-	}
-	return s.bookRepo.Delete(id)
-}
-
 // RegisterMember registers a new member
 func (s *LibraryService) RegisterMember(name, email string, membershipType models.MembershipType) (*models.Member, error) {
 	existing, _ := s.memberRepo.GetByEmail(email)
@@ -90,29 +79,42 @@ func (s *LibraryService) RegisterMember(name, email string, membershipType model
 	return member, nil
 }
 
-// UpdateMember updates member details
-func (s *LibraryService) UpdateMember(id, name, email string) (*models.Member, error) {
-	member, err := s.memberRepo.GetByID(id)
-	if err != nil {
-		return nil, err
-	}
-	member.Name = name
-	member.Email = email
-	if err := s.memberRepo.Update(member); err != nil {
-		return nil, err
-	}
-	return member, nil
+// SearchCriteria defines search filters
+type SearchCriteria struct {
+	Title   string
+	Author  string
+	Subject string
+	ISBN    string
 }
 
-// DeactivateMember deactivates a member
-func (s *LibraryService) DeactivateMember(id string) error {
-	member, err := s.memberRepo.GetByID(id)
+// SearchBooks finds books matching the criteria (case-insensitive partial match)
+func (s *LibraryService) SearchBooks(criteria SearchCriteria) ([]*models.Book, error) {
+	books, err := s.bookRepo.ListAll()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if member.BorrowedCount > 0 {
-		return errors.New("cannot deactivate: member has active loans")
+
+	var results []*models.Book
+	for _, b := range books {
+		if s.matchesBook(b, criteria) {
+			results = append(results, b)
+		}
 	}
-	member.IsActive = false
-	return s.memberRepo.Update(member)
+	return results, nil
+}
+
+func (s *LibraryService) matchesBook(book *models.Book, c SearchCriteria) bool {
+	if c.ISBN != "" && !strings.EqualFold(book.ISBN, c.ISBN) {
+		return false
+	}
+	if c.Title != "" && !strings.Contains(strings.ToLower(book.Title), strings.ToLower(c.Title)) {
+		return false
+	}
+	if c.Author != "" && !strings.Contains(strings.ToLower(book.Author), strings.ToLower(c.Author)) {
+		return false
+	}
+	if c.Subject != "" && !strings.Contains(strings.ToLower(book.Subject), strings.ToLower(c.Subject)) {
+		return false
+	}
+	return true
 }

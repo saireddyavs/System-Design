@@ -14,7 +14,6 @@ type Priority int
 
 const (
 	PriorityLow Priority = iota
-	PriorityMedium
 	PriorityHigh
 	PriorityCritical
 )
@@ -23,19 +22,15 @@ const (
 type Status string
 
 const (
-	StatusPending   Status = "pending"
-	StatusSent      Status = "sent"
-	StatusDelivered Status = "delivered"
-	StatusFailed    Status = "failed"
-	StatusRetrying  Status = "retrying"
+	StatusPending  Status = "pending"
+	StatusSent     Status = "sent"
+	StatusFailed   Status = "failed"
+	StatusRetrying Status = "retrying"
 )
 
 // NotificationType represents the type/category of notification
 type NotificationType string
 
 const (
-	TypeAlert     NotificationType = "alert"
-	TypeReminder  NotificationType = "reminder"
-	TypeMarketing NotificationType = "marketing"
-	TypeSystem    NotificationType = "system"
+	TypeAlert NotificationType = "alert"
 )

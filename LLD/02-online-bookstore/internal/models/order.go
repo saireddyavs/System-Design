@@ -6,11 +6,8 @@ import "time"
 type OrderStatus string
 
 const (
-	OrderStatusPending   OrderStatus = "pending"
-	OrderStatusPaid      OrderStatus = "paid"
-	OrderStatusShipped   OrderStatus = "shipped"
-	OrderStatusDelivered OrderStatus = "delivered"
-	OrderStatusCancelled OrderStatus = "cancelled"
+	OrderStatusPending OrderStatus = "pending"
+	OrderStatusPaid    OrderStatus = "paid"
 )
 
 // OrderItem represents a line item in an order.

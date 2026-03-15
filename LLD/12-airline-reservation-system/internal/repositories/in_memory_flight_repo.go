@@ -50,19 +50,6 @@ func (r *InMemoryFlightRepository) GetByID(id string) (*models.Flight, error) {
 	return copyFlight(flight), nil
 }
 
-func (r *InMemoryFlightRepository) GetByFlightNumber(flightNumber string) ([]*models.Flight, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	var result []*models.Flight
-	for _, f := range r.flights {
-		if f.FlightNumber == flightNumber {
-			result = append(result, copyFlight(f))
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryFlightRepository) Update(flight *models.Flight) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -71,17 +58,6 @@ func (r *InMemoryFlightRepository) Update(flight *models.Flight) error {
 		return ErrFlightNotFound
 	}
 	r.flights[flight.ID] = copyFlight(flight)
-	return nil
-}
-
-func (r *InMemoryFlightRepository) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-
-	if _, exists := r.flights[id]; !exists {
-		return ErrFlightNotFound
-	}
-	delete(r.flights, id)
 	return nil
 }
 
@@ -99,17 +75,6 @@ func (r *InMemoryFlightRepository) SearchByRoute(origin, destination string, dat
 			f.Status != models.FlightStatusCancelled {
 			result = append(result, copyFlight(f))
 		}
-	}
-	return result, nil
-}
-
-func (r *InMemoryFlightRepository) GetAll() ([]*models.Flight, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	result := make([]*models.Flight, 0, len(r.flights))
-	for _, f := range r.flights {
-		result = append(result, copyFlight(f))
 	}
 	return result, nil
 }

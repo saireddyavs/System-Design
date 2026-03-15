@@ -84,7 +84,7 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 | **Strategy** | EmailSender, SMSSender, PushSender implement `NotificationSender` | Swap delivery algorithms (channels) at runtime without changing client code. Adding a new channel = new strategy. |
 | **Observer** | `NotificationObserver`, `Subscribe()`, `notifyObservers()` | Decouple notification lifecycle events from consumers. Analytics, logging, metrics can subscribe without modifying core logic. |
 | **Template Method** | `processNotification()` in NotificationService | Defines the skeleton (validate → rate limit → send → update) while allowing steps to vary. Subclasses could override specific steps. |
-| **Decorator** | `RetrySender`, `RateLimitedSender` wrap base senders | Add retry/rate-limiting behavior without modifying EmailSender, SMSSender. Composable, single-responsibility. |
+| **Decorator** | `RetrySender` wraps base senders | Add retry behavior (exponential backoff) without modifying EmailSender, SMSSender. Composable, single-responsibility. Rate limiting via separate RateLimiter. |
 | **Factory** | `createNotification()` | Centralizes notification creation logic. Ensures consistent ID generation, default values. |
 | **Builder** | `SendRequestBuilder` | Fluent API for constructing complex SendRequest. Handles optional template vs raw content, variables. |
 | **Chain of Responsibility** | Processing pipeline (validate → rate limit → send) | Each step can pass or reject. Could be extended with more handlers (e.g., deduplication, filtering). |
@@ -95,7 +95,7 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 
 | Principle | Implementation |
 |-----------|----------------|
-| **S - Single Responsibility** | `TemplateService` (templates only), `PreferenceService` (preferences only), `NotificationService` (orchestration). Senders do one thing: send. |
+| **S - Single Responsibility** | `TemplateService` (templates only), `NotificationService` (orchestration). User preferences in User model. Senders do one thing: send. |
 | **O - Open/Closed** | New channels: add new `NotificationSender` implementation. New observers: implement `NotificationObserver`. No changes to existing code. |
 | **L - Liskov Substitution** | Any `NotificationSender` can replace another. `RetrySender` wraps any sender and remains substitutable. |
 | **I - Interface Segregation** | Small interfaces: `NotificationSender` (Send, Channel), `RateLimiter` (Allow, Record), `TemplateEngine` (Render). Clients depend only on what they need. |
@@ -130,7 +130,7 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 ### 10-Minute Deep Dive
 1. **Architecture**: Clean architecture—models, interfaces, services, senders, repositories. Dependency injection in `main.go`.
 2. **Strategy**: `EmailSender`, `SMSSender`, `PushSender` implement `NotificationSender`. Service looks up sender by channel. Adding Slack = new struct implementing the interface.
-3. **Decorator**: `RetrySender` wraps any sender, adds 3 retries with exponential backoff. `RateLimitedSender` adds rate checks. Composable.
+3. **Decorator**: `RetrySender` wraps any sender, adds 3 retries with exponential backoff. Rate limiting via `RateLimiter` interface (SlidingWindowRateLimiter). Composable.
 4. **Observer**: `Subscribe(observer)`. On status change, we iterate observers and call `OnNotificationEvent`. Used for logging, metrics.
 5. **Concurrency**: Worker pool with `heap`-based priority queue. Batch send uses goroutines + WaitGroup. All shared state protected by mutexes.
 6. **SOLID**: Each service has one job. Interfaces are small. Repositories are swappable. New behavior via new implementations, not edits.
@@ -160,9 +160,9 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 ├── internal/
 │   ├── models/                 # Notification, User, Template, enums
 │   ├── interfaces/             # Sender, Repository, TemplateEngine, RateLimiter
-│   ├── services/               # Notification, Template, Preference services
+│   ├── services/               # Notification, Template services
 │   ├── senders/                # Email, SMS, Push (Strategy)
-│   ├── middleware/             # Rate limiter, Retry sender (Decorator)
+│   ├── middleware/             # Rate limiter, Retry handler (Decorator)
 │   └── repositories/           # In-memory implementations
 ├── tests/                      # Unit tests
 ├── go.mod

@@ -68,7 +68,7 @@ Design and implement an expense tracking system that allows users to split expen
 | Entity     | Key Fields |
 |------------|------------|
 | User       | ID, Name, Email, Phone |
-| Group      | ID, Name, MemberIDs, CreatedBy |
+| Group      | ID, Name, Description, MemberIDs, CreatedBy |
 | Expense    | ID, Description, Amount, PaidBy, SplitType, Splits, GroupID |
 | Split      | UserID, Amount, Percentage, Share, ExactAmount |
 | Balance    | DebtorID, CreditorID, Amount, GroupID |

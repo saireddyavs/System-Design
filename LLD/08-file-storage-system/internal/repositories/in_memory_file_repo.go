@@ -53,18 +53,6 @@ func (r *InMemoryFileRepo) GetFileByID(id string) (*models.File, error) {
 	return file, nil
 }
 
-func (r *InMemoryFileRepo) GetFilesByParentFolder(parentFolderID string) ([]*models.File, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.File
-	for _, file := range r.files {
-		if file.ParentFolderID == parentFolderID {
-			result = append(result, file)
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryFileRepo) UpdateFile(file *models.File) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -137,18 +125,6 @@ func (r *InMemoryFileRepo) GetFolderByID(id string) (*models.Folder, error) {
 	return folder, nil
 }
 
-func (r *InMemoryFileRepo) GetFoldersByParentFolder(parentFolderID string) ([]*models.Folder, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Folder
-	for _, folder := range r.folders {
-		if folder.ParentFolderID == parentFolderID {
-			result = append(result, folder)
-		}
-	}
-	return result, nil
-}
-
 func (r *InMemoryFileRepo) UpdateFolder(folder *models.Folder) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -193,16 +169,4 @@ func (r *InMemoryFileRepo) DeleteFolder(id string) error {
 	}
 	delete(r.folders, id)
 	return nil
-}
-
-func (r *InMemoryFileRepo) GetFileSystemItemByID(id string) (models.FileSystemItem, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	if file, exists := r.files[id]; exists {
-		return file, nil
-	}
-	if folder, exists := r.folders[id]; exists {
-		return folder, nil
-	}
-	return nil, ErrFileNotFound
 }

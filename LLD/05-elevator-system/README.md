@@ -102,9 +102,8 @@ Path: * → 2 → 5 → 8 → REVERSE (no more requests ahead) → ...
 
 | Pattern | Where | Why |
 |---------|-------|-----|
-| **Strategy** | `SchedulingStrategy` interface, `ScanStrategy`, `LookStrategy`, `NearestStrategy` | Interchangeable scheduling algorithms without modifying dispatcher. OCP: new strategies without changing existing code. |
+| **Strategy** | `SchedulingStrategy` interface, `ScanStrategy`, `LookStrategy` | Interchangeable scheduling algorithms without modifying dispatcher. OCP: new strategies without changing existing code. |
 | **State** | `ElevatorState` (Idle, MovingUp, MovingDown, DoorOpen, Maintenance, EmergencyStop) | Each state encapsulates behavior. State transitions are explicit. |
-| **Observer** | `FloorArrivalObserver`, `OnFloorArrival()` | Elevators notify observers (e.g., display panels) when arriving at a floor. Loose coupling. |
 | **Command** | `Request` struct | Encapsulates request as object. Can be queued, logged, undone. |
 | **Singleton** | `GetDispatcher()` | Single dispatcher per building. Ensures consistent request routing. |
 | **Facade** | `BuildingController` | Simplifies complex subsystem (dispatcher + elevators) behind simple API. |
@@ -116,7 +115,7 @@ Path: * → 2 → 5 → 8 → REVERSE (no more requests ahead) → ...
 | **S**ingle Responsibility | `Elevator` = state, `Dispatcher` = routing, `Strategy` = ordering |
 | **O**pen/Closed | New scheduling strategy = new type implementing interface, no changes to dispatcher |
 | **L**iskov Substitution | Any `SchedulingStrategy` implementation works in `ElevatorService` |
-| **I**nterface Segregation | `SchedulingStrategy` (order), `ElevatorController` (API), `FloorArrivalObserver` (notify) |
+| **I**nterface Segregation | `SchedulingStrategy` (order), `ElevatorController` (API) |
 | **D**ependency Inversion | `ElevatorService` depends on `SchedulingStrategy` interface, not concrete SCAN/LOOK |
 
 ## Concurrency Model
@@ -170,8 +169,7 @@ Path: * → 2 → 5 → 8 → REVERSE (no more requests ahead) → ...
 │   │   └── building_controller.go
 │   └── strategies/          # Scheduling algorithms
 │       ├── scan_strategy.go
-│       ├── look_strategy.go
-│       └── nearest_strategy.go
+│       └── look_strategy.go
 ├── tests/
 │   ├── elevator_service_test.go
 │   └── dispatcher_test.go
@@ -223,13 +221,13 @@ go test ./tests/... -v
 
 Inside each elevator, we use the LOOK algorithm: continue in current direction, serve requests along the way, reverse when no more requests ahead. Requests are ordered by the strategy's floor sequence.
 
-We use the Strategy pattern for SCAN/LOOK/Nearest, State pattern for elevator states (Idle, MovingUp, DoorOpen, EmergencyStop), and channels for communication. All shared state is protected by mutexes for thread safety."
+We use the Strategy pattern for SCAN/LOOK, State pattern for elevator states (Idle, MovingUp, DoorOpen, EmergencyStop), and channels for communication. All shared state is protected by mutexes for thread safety."
 
 ### 10-Minute Deep Dive
 
 **1. Request Flow**: External request → Dispatcher → selectElevator (nearest, same direction, not overweight) → elevator.requestCh → elevator queue → strategy.OrderRequests → processNextStep loop.
 
-**2. SCAN vs LOOK**: SCAN goes to end of building before reversing; LOOK reverses when no more requests ahead. LOOK is more efficient. Both produce an ordered floor sequence; we map requests to that sequence.
+**2. SCAN vs LOOK**: SCAN goes to end of building before reversing; LOOK reverses when no more requests ahead. LOOK is more efficient. Both produce an ordered floor sequence via `ScanStrategy` and `LookStrategy`; we map requests to that sequence.
 
 **3. Concurrency**: Dispatcher has one goroutine reading from requestCh. Each elevator has one goroutine with a ticker (100ms) calling processNextStep. Mutex protects shared state. No shared mutable state between elevators.
 

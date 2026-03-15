@@ -42,27 +42,6 @@ func (r *InMemoryGuestRepository) GetByID(id string) (*models.Guest, error) {
 	return guest, nil
 }
 
-func (r *InMemoryGuestRepository) GetByEmail(email string) (*models.Guest, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	for _, g := range r.guests {
-		if g.Email == email {
-			return g, nil
-		}
-	}
-	return nil, ErrGuestNotFound
-}
-
-func (r *InMemoryGuestRepository) GetAll() ([]*models.Guest, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	result := make([]*models.Guest, 0, len(r.guests))
-	for _, g := range r.guests {
-		result = append(result, g)
-	}
-	return result, nil
-}
-
 func (r *InMemoryGuestRepository) Update(guest *models.Guest) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -73,12 +52,3 @@ func (r *InMemoryGuestRepository) Update(guest *models.Guest) error {
 	return nil
 }
 
-func (r *InMemoryGuestRepository) Delete(id string) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if _, exists := r.guests[id]; !exists {
-		return ErrGuestNotFound
-	}
-	delete(r.guests, id)
-	return nil
-}

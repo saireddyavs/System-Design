@@ -77,13 +77,3 @@ func (r *InMemoryReservationRepo) GetByMemberID(memberID string) ([]*models.Rese
 	}
 	return result, nil
 }
-
-func (r *InMemoryReservationRepo) ListAll() ([]*models.Reservation, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	result := make([]*models.Reservation, 0, len(r.reservations))
-	for _, res := range r.reservations {
-		result = append(result, res)
-	}
-	return result, nil
-}

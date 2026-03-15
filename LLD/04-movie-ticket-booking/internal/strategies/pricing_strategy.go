@@ -5,11 +5,6 @@ import (
 	"time"
 )
 
-// PricingStrategy defines price calculation (Strategy Pattern - OCP)
-type PricingStrategy interface {
-	CalculatePrice(basePrice float64, seatCategory models.SeatCategory, showTime time.Time) float64
-}
-
 // WeekdayPricingStrategy - lower prices on weekdays
 type WeekdayPricingStrategy struct {
 	WeekendMultiplier float64

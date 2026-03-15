@@ -4,13 +4,8 @@ package models
 type Genre string
 
 const (
-	GenreAction   Genre = "Action"
-	GenreComedy   Genre = "Comedy"
-	GenreDrama    Genre = "Drama"
-	GenreHorror   Genre = "Horror"
-	GenreSciFi    Genre = "Sci-Fi"
-	GenreRomance  Genre = "Romance"
-	GenreThriller Genre = "Thriller"
+	GenreAction Genre = "Action"
+	GenreSciFi  Genre = "Sci-Fi"
 )
 
 // Movie represents a movie entity

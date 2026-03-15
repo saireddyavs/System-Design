@@ -50,7 +50,7 @@ Screen 1----* Seat
 ### Strategy Pattern (Pricing)
 - **Location**: `internal/strategies/pricing_strategy.go`
 - **Purpose**: Open/Closed Principle - add new pricing rules without modifying existing code
-- **Implementations**: `WeekdayPricingStrategy` (weekend multiplier + seat category), `FlatPricingStrategy`
+- **Implementation**: `WeekdayPricingStrategy` (weekend multiplier + seat category)
 
 ### Factory Pattern (Booking Creation)
 - **Location**: `internal/services/booking_service.go` - `createBooking()`
@@ -73,7 +73,7 @@ Screen 1----* Seat
 
 | Principle | Application |
 |-----------|-------------|
-| **S**ingle Responsibility | `MovieService` (movies only), `BookingService` (bookings only), `SearchService` (search only) |
+| **S**ingle Responsibility | `BookingService` (bookings only), `SearchService` (search), `ShowService` (shows) |
 | **O**pen/Closed | `PricingStrategy` interface - extend with new strategies without modifying `BookingService` |
 | **L**iskov Substitution | Any `PricingStrategy` implementation works in `BookingService` |
 | **I**nterface Segregation | `PaymentProcessor`, `NotificationService`, `PricingStrategy` - small, focused interfaces |
@@ -116,7 +116,7 @@ defer lock.Unlock()
 1. **Architecture**: Clean separation - models, interfaces, services, repositories. All dependencies flow inward via interfaces.
 2. **Concurrency**: `UpdateSeats` encapsulates the lock. The booking service never touches a mutex directly. We use a map of per-show mutexes so different shows can be booked in parallel.
 3. **Pricing**: `PricingStrategy` interface with `CalculatePrice(base, category, time)`. Weekday strategy applies 1.25x on weekends and category multipliers (1x Regular, 1.5x Premium, 2x VIP).
-4. **Search**: `SearchService` composes MovieRepository, TheatreRepository, ShowRepository to support "movies in city X" and "movies by genre".
+4. **Search**: `SearchService` composes MovieRepository, TheatreRepository, ShowRepository to support "movies in city X" and "movies by genre". Movies accessed via repositories (no separate MovieService).
 5. **Testing**: Unit tests cover booking success, double-booking rejection, cancellation refund, and concurrent same-seat (exactly 1 succeeds) and different-seat (both succeed) scenarios.
 
 ## 8. Future Improvements

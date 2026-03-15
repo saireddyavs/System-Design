@@ -11,7 +11,6 @@ type PostRepository interface {
 	GetPost(id string) (*models.Post, error)
 	UpdatePost(post *models.Post) error
 	DeletePost(id string) error
-	GetPostsByAuthor(authorID string, limit, offset int) ([]*models.Post, error)
 	GetPostsByAuthors(authorIDs []string, limit, offset int) ([]*models.Post, error)
 }
 

@@ -35,11 +35,6 @@ func (r *InMemoryShowRepository) getShowLock(showID string) *sync.Mutex {
 	return lock
 }
 
-// LockShow acquires exclusive lock on a show for seat booking (pessimistic locking)
-func (r *InMemoryShowRepository) LockShow(showID string) *sync.Mutex {
-	return r.getShowLock(showID)
-}
-
 func (r *InMemoryShowRepository) Create(show *models.Show) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -83,28 +78,6 @@ func (r *InMemoryShowRepository) GetByTheatreID(theatreID string) ([]*models.Sho
 		}
 	}
 	return result, nil
-}
-
-func (r *InMemoryShowRepository) GetByScreenID(screenID string) ([]*models.Show, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Show
-	for _, s := range r.shows {
-		if s.ScreenID == screenID {
-			result = append(result, s)
-		}
-	}
-	return result, nil
-}
-
-func (r *InMemoryShowRepository) Update(show *models.Show) error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if _, ok := r.shows[show.ID]; !ok {
-		return ErrShowNotFound
-	}
-	r.shows[show.ID] = show
-	return nil
 }
 
 // UpdateSeats atomically updates show seats with per-show pessimistic locking

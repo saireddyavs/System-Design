@@ -46,20 +46,6 @@ func (r *InMemoryAccountRepository) GetByID(ctx context.Context, id string) (*mo
 	return acc, nil
 }
 
-func (r *InMemoryAccountRepository) GetByAccountNumber(ctx context.Context, accountNumber string) (*models.Account, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	accID, ok := r.accByNum[accountNumber]
-	if !ok {
-		return nil, ErrAccountNotFound
-	}
-	acc, ok := r.accounts[accID]
-	if !ok {
-		return nil, ErrAccountNotFound
-	}
-	return acc, nil
-}
-
 func (r *InMemoryAccountRepository) Save(ctx context.Context, account *models.Account) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()

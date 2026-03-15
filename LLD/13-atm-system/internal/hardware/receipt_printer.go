@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"time"
 )
 
 // ReceiptPrinter implements receipt printing (simulated hardware)
@@ -50,9 +49,4 @@ func maskAccountNumber(accountNumber string) string {
 		return accountNumber[:2] + "****" + accountNumber[len(accountNumber)-2:]
 	}
 	return accountNumber[:4] + strings.Repeat("*", len(accountNumber)-8) + accountNumber[len(accountNumber)-4:]
-}
-
-// FormatTimestamp formats time for receipt
-func FormatTimestamp(t time.Time) string {
-	return t.Format("2006-01-02 15:04:05")
 }

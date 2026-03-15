@@ -4,7 +4,6 @@ import (
 	"errors"
 	"food-delivery-system/internal/models"
 	"sync"
-	"time"
 )
 
 var ErrOrderNotFound = errors.New("order not found")
@@ -86,16 +85,4 @@ func (r *InMemoryOrderRepo) Update(order *models.Order) error {
 	}
 	r.orders[order.ID] = order
 	return nil
-}
-
-func (r *InMemoryOrderRepo) GetOrdersInStatus(status models.OrderStatus, since time.Time) ([]*models.Order, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-	var result []*models.Order
-	for _, o := range r.orders {
-		if o.Status == status && o.UpdatedAt.After(since) {
-			result = append(result, o)
-		}
-	}
-	return result, nil
 }

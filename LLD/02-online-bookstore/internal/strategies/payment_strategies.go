@@ -27,23 +27,6 @@ func (p *CreditCardProcessor) GetMethodName() string {
 	return "credit_card"
 }
 
-// PayPalProcessor implements PaymentProcessor for PayPal payments.
-type PayPalProcessor struct{}
-
-func NewPayPalProcessor() *PayPalProcessor {
-	return &PayPalProcessor{}
-}
-
-func (p *PayPalProcessor) Process(payment *models.Payment) (*models.Payment, error) {
-	payment.TransactionID = fmt.Sprintf("PP-%d", time.Now().UnixNano())
-	payment.Status = models.PaymentStatusCompleted
-	return payment, nil
-}
-
-func (p *PayPalProcessor) GetMethodName() string {
-	return "paypal"
-}
-
 // PaymentProcessorRegistry holds available payment processors (Strategy selection).
 // OCP: Add new payment methods by registering new processors.
 type PaymentProcessorRegistry struct {
@@ -56,7 +39,6 @@ func NewPaymentProcessorRegistry() *PaymentProcessorRegistry {
 	}
 	// Register default processors
 	registry.Register(NewCreditCardProcessor())
-	registry.Register(NewPayPalProcessor())
 	return registry
 }
 

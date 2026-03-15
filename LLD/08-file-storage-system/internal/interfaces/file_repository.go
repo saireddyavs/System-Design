@@ -7,7 +7,6 @@ type FileRepository interface {
 	// File operations
 	CreateFile(file *models.File) error
 	GetFileByID(id string) (*models.File, error)
-	GetFilesByParentFolder(parentFolderID string) ([]*models.File, error)
 	UpdateFile(file *models.File) error
 	UpdateFileParent(fileID, oldParentID, newParentID string) error
 	DeleteFile(id string) error
@@ -15,11 +14,7 @@ type FileRepository interface {
 	// Folder operations
 	CreateFolder(folder *models.Folder) error
 	GetFolderByID(id string) (*models.Folder, error)
-	GetFoldersByParentFolder(parentFolderID string) ([]*models.Folder, error)
 	UpdateFolder(folder *models.Folder) error
 	UpdateFolderParent(folderID, oldParentID, newParentID string) error
 	DeleteFolder(id string) error
-
-	// Generic operations for composite pattern
-	GetFileSystemItemByID(id string) (models.FileSystemItem, error)
 }

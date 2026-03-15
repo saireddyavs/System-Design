@@ -29,7 +29,6 @@ func TestSendNotification_WithTemplate(t *testing.T) {
 
 	engine := services.NewDefaultTemplateEngine()
 	templateSvc := services.NewTemplateService(templateRepo, engine)
-	preferenceSvc := services.NewPreferenceService(userRepo)
 	rateLimiter := middleware.NewSlidingWindowRateLimiter(100, time.Hour) // High limit for tests
 
 	senderMap := map[models.Channel]interfaces.NotificationSender{
@@ -37,7 +36,7 @@ func TestSendNotification_WithTemplate(t *testing.T) {
 	}
 
 	svc := services.NewNotificationService(
-		notifRepo, userRepo, senderMap, templateSvc, preferenceSvc, rateLimiter,
+		notifRepo, userRepo, senderMap, templateSvc, rateLimiter,
 	)
 
 	req := services.NewSendRequestBuilder("u1").
@@ -64,7 +63,6 @@ func TestSendNotification_RespectsUserPreferences(t *testing.T) {
 
 	engine := services.NewDefaultTemplateEngine()
 	templateSvc := services.NewTemplateService(templateRepo, engine)
-	preferenceSvc := services.NewPreferenceService(userRepo)
 	rateLimiter := middleware.NewSlidingWindowRateLimiter(100, time.Hour)
 
 	senderMap := map[models.Channel]interfaces.NotificationSender{
@@ -72,7 +70,7 @@ func TestSendNotification_RespectsUserPreferences(t *testing.T) {
 	}
 
 	svc := services.NewNotificationService(
-		notifRepo, userRepo, senderMap, templateSvc, preferenceSvc, rateLimiter,
+		notifRepo, userRepo, senderMap, templateSvc, rateLimiter,
 	)
 
 	req := services.NewSendRequestBuilder("u1").
@@ -98,7 +96,6 @@ func TestSendBatch_Concurrent(t *testing.T) {
 
 	engine := services.NewDefaultTemplateEngine()
 	templateSvc := services.NewTemplateService(templateRepo, engine)
-	preferenceSvc := services.NewPreferenceService(userRepo)
 	rateLimiter := middleware.NewSlidingWindowRateLimiter(100, time.Hour)
 
 	senderMap := map[models.Channel]interfaces.NotificationSender{
@@ -107,7 +104,7 @@ func TestSendBatch_Concurrent(t *testing.T) {
 	}
 
 	svc := services.NewNotificationService(
-		notifRepo, userRepo, senderMap, templateSvc, preferenceSvc, rateLimiter,
+		notifRepo, userRepo, senderMap, templateSvc, rateLimiter,
 	)
 
 	reqs := make([]*services.SendRequest, 10)
@@ -143,7 +140,6 @@ func TestObserver_ReceivesEvents(t *testing.T) {
 
 	engine := services.NewDefaultTemplateEngine()
 	templateSvc := services.NewTemplateService(templateRepo, engine)
-	preferenceSvc := services.NewPreferenceService(userRepo)
 	rateLimiter := middleware.NewSlidingWindowRateLimiter(100, time.Hour)
 
 	senderMap := map[models.Channel]interfaces.NotificationSender{
@@ -151,7 +147,7 @@ func TestObserver_ReceivesEvents(t *testing.T) {
 	}
 
 	svc := services.NewNotificationService(
-		notifRepo, userRepo, senderMap, templateSvc, preferenceSvc, rateLimiter,
+		notifRepo, userRepo, senderMap, templateSvc, rateLimiter,
 	)
 
 	var events []services.NotificationEvent

@@ -74,18 +74,3 @@ func (s *LocalStorageProvider) Delete(path string) error {
 	}
 	return os.Remove(fullPath)
 }
-
-func (s *LocalStorageProvider) Exists(path string) (bool, error) {
-	if s.inMemory != nil {
-		s.mu.RLock()
-		_, exists := s.inMemory[path]
-		s.mu.RUnlock()
-		return exists, nil
-	}
-	fullPath := filepath.Join(s.basePath, path)
-	_, err := os.Stat(fullPath)
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return err == nil, err
-}

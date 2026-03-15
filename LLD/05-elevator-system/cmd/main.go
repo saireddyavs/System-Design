@@ -37,7 +37,7 @@ func main() {
 	req4 := models.NewInternalRequest(3, 8)
 	ctrl.SubmitRequest(req4)
 
-	fmt.Println("Submitted 4 requests. Running for 5 seconds...\n")
+	fmt.Println("Submitted 4 requests. Running for 5 seconds...")
 
 	// Display status periodically
 	for i := 0; i < 10; i++ {

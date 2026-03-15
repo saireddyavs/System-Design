@@ -67,14 +67,3 @@ func (r *InMemoryOrderRepository) Update(order *models.Order) error {
 	r.orders[order.ID] = order
 	return nil
 }
-
-func (r *InMemoryOrderRepository) GetAll() ([]*models.Order, error) {
-	r.mu.RLock()
-	defer r.mu.RUnlock()
-
-	orders := make([]*models.Order, 0, len(r.orders))
-	for _, order := range r.orders {
-		orders = append(orders, order)
-	}
-	return orders, nil
-}

@@ -8,7 +8,6 @@ type SeatStatus string
 const (
 	SeatStatusAvailable SeatStatus = "available"
 	SeatStatusBooked    SeatStatus = "booked"
-	SeatStatusBlocked   SeatStatus = "blocked"
 )
 
 // Show represents a scheduled movie show
