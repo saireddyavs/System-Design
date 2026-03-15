@@ -98,6 +98,18 @@ Path: * → 2 → 5 → 8 → REVERSE (no more requests ahead) → ...
 4. **LOOK** orders queue: Visit 3 (pickup) → 8 (dropoff)
 5. **Elevator** moves up, stops at 8, door opens, passenger exits
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|-------------|------------|-----|------------------------|
+| **LOOK/SCAN algorithm** | `LookStrategy.OrderRequests()`, `ScanStrategy` | LOOK: reverse when no requests ahead; SCAN: reverse at building end; minimizes elevator travel | LOOK more efficient; both produce ordered floor sequence |
+| **Sorted request ordering** | `buildLookFloorSequence()`, `requestsByFirstStop()` | Orders requests by floor sequence; map[int]bool for floor set; sort by first-stop order | Priority queue for real-time; sorted slice sufficient for batch processing |
+| **State machine** | `ElevatorState` (Idle, MovingUp, MovingDown, DoorOpen, Maintenance, EmergencyStop) | Encapsulates behavior per state; explicit transitions | State pattern; alternative: enum + switch |
+| **Min-distance dispatching** | `DispatcherService.computeScore()`, `selectElevator()` | Prefer elevator moving toward request; idle elevators by distance; penalty for wrong direction | Alternative: round-robin, load-balanced; min-distance reduces wait time |
+| **sync.RWMutex** | Elevator, Building, DispatcherService | Protects RequestQueue, CurrentFloor, elevatorSvcs map | Channels for async; mutex for sync shared state |
+
+---
+
 ## Design Patterns
 
 | Pattern | Where | Why |

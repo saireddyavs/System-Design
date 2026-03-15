@@ -127,6 +127,16 @@ feed, _ := feedService.GetFeed(userID, 10, 0)
 
 **Why**: Profile operations involve validation, updates, and potentially multiple subsystems. Facade provides a simple interface: `UpdateProfile(userID, bio, pic)` hides internal complexity.
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **Adjacency list (bi-directional)** | `InMemoryFriendshipRepository`: `friendships` map + `byUser`; `GetAcceptedFriends()` iterates, adds both RequesterID/ReceiverID to friend set | Friendship graph: A-B means both see each other's posts; O(n) scan for friends | Graph DB (Neo4j); separate followers/following tables |
+| **Feed generation (fan-out on read)** | `FeedService.GetFeed()`: GetAcceptedFriends → GetPostsByAuthors → enrich → sort → paginate | Fetch posts from friends at read time; simple, good for small friend lists | Fan-out on write (pre-compute feed); cache per user |
+| **Chronological vs popularity sort** | `ChronologicalFeedStrategy`: sort by `CreatedAt` desc; `PopularityFeedStrategy`: sort by `likes+comments` desc, then timestamp | Swappable sort strategies; default chronological, trending by engagement | ML-based ranking; hybrid score |
+| **Notification fan-out** | `NotificationPublisher.Publish()`: copy observers under RLock, notify each | Decouple event producers (like, comment, friend request) from consumers (persist, push) | Message queue (Kafka); async workers |
+| **HashMap** | All repositories (User, Post, Comment, Like, Friendship, Notification) | O(1) lookup by ID | B-tree for range; Elasticsearch for search |
+
 ## SOLID Principles Mapping
 
 | Principle | Application |

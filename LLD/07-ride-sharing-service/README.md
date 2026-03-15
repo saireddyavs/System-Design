@@ -76,6 +76,16 @@ d = R × c  (R = 6371 km)
 | **State** | `RideStatus` (Requested → DriverAssigned → InProgress → Completed/Cancelled) | Encapsulate state-specific behavior. Invalid transitions are prevented. |
 | **Repository** | `DriverRepository`, `RideRepository`, etc. | Abstract data access. Swap in-memory for PostgreSQL without changing business logic. |
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **HashMap** | All repositories (`InMemoryDriverRepository`, `InMemoryRiderRepository`, `InMemoryRideRepository`, `InMemoryPaymentRepository`, `InMemoryRatingRepository`) | O(1) lookup by ID; fast Create/GetByID/Update | B-tree for range queries; PostGIS for geo queries |
+| **Haversine formula** | `models/location.go` `HaversineDistance()`, `NearestDriverStrategy.FindDriver()`, `BaseFareStrategy.Calculate()` | Great-circle distance between two lat/lon points for driver matching and fare calculation | Vincenty formula for higher precision; PostGIS `ST_Distance` for DB-backed geo |
+| **Linear scan** | `NearestDriverStrategy.FindDriver()`: iterate all drivers, filter by radius and rating | Simple O(n) scan to find drivers within `MaxSearchRadiusKm`; filter rating ≥ 3.0 | GeoHash/quadtree for O(log n) spatial queries; Redis GEO for distributed |
+| **Surge multiplier** | `RideService.getSurgeMultiplier()`: `CountActiveRequests() >= SurgeThreshold` → 1.5x | Demand-based pricing when active requests exceed threshold (default 10) | Time-of-day rules; ML-based dynamic pricing |
+| **In-memory payment** | `InMemoryPaymentProcessor.ProcessPayment()` | Demo: create payment record, persist to repo; no external gateway | Stripe/PayPal integration; idempotency keys for retries |
+
 ## SOLID Principles Mapping
 
 | Principle | Implementation |

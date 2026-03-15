@@ -138,7 +138,18 @@ A library needs a system to manage books, members, lending, reservations, and ov
 7. **Rate limiting**: Prevent abuse of notification channels
 8. **Metrics**: Prometheus for loan volume, overdue rate, reservation conversion
 
-## 11. Running the Project
+## 11. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|-------------|------------|-----|------------------------|
+| **HashMap** | All repositories (books, members, loans, reservations, fines) | O(1) lookup by ID; standard in-memory storage | Production: PostgreSQL with indexes; HashMap for demo/testing |
+| **Linear search with multi-field filtering** | `LibraryService.SearchBooks(SearchCriteria)` | Iterates all books; filters by ISBN, Title, Author, Subject (case-insensitive partial match) | Elasticsearch for full-text; for small catalogs, linear scan acceptable |
+| **Date arithmetic** | `PerDayFineCalculator.Calculate()`, `LoanService.CheckOut` (DueDate = IssueDate + 14 days) | Overdue = now.After(DueDate); fine = daysOverdue × rate; loan period computation | time.Time.AddDate for date math; consider timezone for distributed systems |
+| **sync.RWMutex** | All repositories, NotificationManager | Thread-safe concurrent access; RLock for reads | Same as other projects; essential for concurrent checkout/return |
+
+---
+
+## 12. Running the Project
 
 ```bash
 # Build
@@ -151,7 +162,7 @@ go run ./cmd
 go test ./tests/... -v
 ```
 
-## 12. Directory Structure
+## 13. Directory Structure
 
 ```
 03-library-management-system/

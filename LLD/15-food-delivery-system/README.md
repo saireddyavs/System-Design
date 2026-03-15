@@ -112,6 +112,16 @@ func (l Location) Distance(other Location) float64 {
 | **Factory** | `OrderService.PlaceOrder` | Creates order with validated items, calculated amounts, assigned agent |
 | **Repository** | All `*Repository` interfaces | Abstracts data access; swap in-memory for DB without changing services |
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **Haversine formula** | `Location.Distance()` | Great-circle distance between restaurant, customer, and delivery agent for fee and assignment | Euclidean approximation (faster, less accurate); PostGIS/Redis Geo for scale |
+| **Linear scan** | `NearestAgentStrategy.AssignAgent()` | Iterate available agents, compute distance, pick nearest within radius | k-d tree / spatial index for large agent counts; heap for top-k |
+| **Order state machine** | `Order.canTransition()`, `Order.SetStatus()` | Enforce valid lifecycle: Placed → Confirmed → Preparing → PickedUp → Delivered | State pattern with explicit states; event sourcing for audit |
+| **Restaurant search with filters** | `SearchService.SearchRestaurants()` | Intersect results from name, cuisine, location; filter open only | Inverted index for text; geospatial index for location |
+| **Pricing (distance + surge)** | `DefaultPricingStrategy` | Delivery fee = f(distance); surge = f(time of day) | Dynamic surge from demand; zone-based pricing |
+
 ## SOLID Principles Mapping
 
 | Principle | Implementation |

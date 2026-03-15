@@ -178,6 +178,18 @@ Algorithm: CalculateDispense(amount, inventory)
 
 ---
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **Greedy cash dispensing** | `GreedyCashDispenser.CalculateDispense()` — largest denomination first | Minimize note count; Indian denominations (2000,1000,500,100) are canonical—greedy is optimal | DP for exact change: needed if denominations aren't canonical; smallest-first: more notes |
+| **Command pattern** | `ATMCommand` — `WithdrawalCommand`, `BalanceInquiryCommand`, etc. | Encapsulate each operation; enables logging, undo, queueing; uniform `Execute()` interface | Direct method calls: simpler; Command queue: enables async/batch |
+| **Chain of Responsibility** | `TransactionValidator` — Amount → Balance → DailyLimit | Each validator handles one rule; add/remove/reorder without touching core | Single validator: all rules in one place—harder to extend |
+| **State machine** | `ATM.State` — Idle → CardInserted → Authenticated → TransactionInProgress | Guard transitions; invalid ops rejected by state check | State pattern (classes): more OOP; enum + switch: simpler for LLD |
+| **Denomination map** | `CashInventory map[Denomination]int` | O(1) lookup of count per denomination; easy to add/remove notes | Array indexed by denom: same; struct fields: less flexible |
+
+---
+
 ## SOLID Principles Mapping
 
 | Principle | Implementation |

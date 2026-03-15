@@ -33,25 +33,25 @@ Staff+ interview preparation — HLD, LLD, and deep engineering fundamentals.
 
 17 Go projects — each demonstrates SOLID, design patterns, and concurrency.
 
-| # | Problem | Patterns | Link |
-|---|---------|----------|------|
-| 01 | Parking Lot | Strategy, DIP | [README](LLD/01-parking-lot-system/README.md) |
-| 02 | Online Bookstore | Strategy, Observer, Factory | [README](LLD/02-online-bookstore/README.md) |
-| 03 | Library Management | Observer, Strategy, Facade | [README](LLD/03-library-management-system/README.md) |
-| 04 | Movie Ticket Booking | Strategy, Observer, Builder | [README](LLD/04-movie-ticket-booking/README.md) |
-| 05 | Elevator System | Strategy, State | [README](LLD/05-elevator-system/README.md) |
-| 06 | Hotel Management | Strategy, Observer, Factory | [README](LLD/06-hotel-management-system/README.md) |
-| 07 | Ride Sharing (Uber) | Strategy, Observer | [README](LLD/07-ride-sharing-service/README.md) |
-| 08 | File Storage (Dropbox) | Composite, Observer | [README](LLD/08-file-storage-system/README.md) |
-| 09 | Chat Application | Pub/Sub, Strategy, Factory | [README](LLD/09-chat-application/README.md) |
-| 10 | Social Media | Strategy, Observer | [README](LLD/10-social-media-platform/README.md) |
-| 11 | Notification System | Strategy, Decorator, Chain | [README](LLD/11-notification-system/README.md) |
-| 12 | Airline Reservation | Strategy, Observer, Builder | [README](LLD/12-airline-reservation-system/README.md) |
-| 13 | ATM System | Command, State, CoR | [README](LLD/13-atm-system/README.md) |
-| 14 | E-Commerce | Strategy, Observer, Factory | [README](LLD/14-ecommerce-website/README.md) |
-| 15 | Food Delivery | Strategy, Observer | [README](LLD/15-food-delivery-system/README.md) |
-| 16 | Shopping Cart | Strategy, Observer | [README](LLD/16-shopping-cart-system/README.md) |
-| 17 | Splitwise | Strategy, Builder | [README](LLD/17-splitwise/README.md) |
+| # | Problem | Patterns | Links |
+|---|---------|----------|-------|
+| 01 | Parking Lot | Strategy, DIP | [README](LLD/01-parking-lot-system/README.md) &#124; [Interview](LLD/01-parking-lot-system/interview.md) |
+| 02 | Online Bookstore | Strategy, Observer, Factory | [README](LLD/02-online-bookstore/README.md) &#124; [Interview](LLD/02-online-bookstore/interview.md) |
+| 03 | Library Management | Observer, Strategy, Facade | [README](LLD/03-library-management-system/README.md) &#124; [Interview](LLD/03-library-management-system/interview.md) |
+| 04 | Movie Ticket Booking | Strategy, Observer, Builder | [README](LLD/04-movie-ticket-booking/README.md) &#124; [Interview](LLD/04-movie-ticket-booking/interview.md) |
+| 05 | Elevator System | Strategy, State | [README](LLD/05-elevator-system/README.md) &#124; [Interview](LLD/05-elevator-system/interview.md) |
+| 06 | Hotel Management | Strategy, Observer, Factory | [README](LLD/06-hotel-management-system/README.md) &#124; [Interview](LLD/06-hotel-management-system/interview.md) |
+| 07 | Ride Sharing (Uber) | Strategy, Observer | [README](LLD/07-ride-sharing-service/README.md) &#124; [Interview](LLD/07-ride-sharing-service/interview.md) |
+| 08 | File Storage (Dropbox) | Composite, Observer | [README](LLD/08-file-storage-system/README.md) &#124; [Interview](LLD/08-file-storage-system/interview.md) |
+| 09 | Chat Application | Pub/Sub, Strategy, Factory | [README](LLD/09-chat-application/README.md) &#124; [Interview](LLD/09-chat-application/interview.md) |
+| 10 | Social Media | Strategy, Observer | [README](LLD/10-social-media-platform/README.md) &#124; [Interview](LLD/10-social-media-platform/interview.md) |
+| 11 | Notification System | Strategy, Decorator, Chain | [README](LLD/11-notification-system/README.md) &#124; [Interview](LLD/11-notification-system/interview.md) |
+| 12 | Airline Reservation | Strategy, Observer, Builder | [README](LLD/12-airline-reservation-system/README.md) &#124; [Interview](LLD/12-airline-reservation-system/interview.md) |
+| 13 | ATM System | Command, State, CoR | [README](LLD/13-atm-system/README.md) &#124; [Interview](LLD/13-atm-system/interview.md) |
+| 14 | E-Commerce | Strategy, Observer, Factory | [README](LLD/14-ecommerce-website/README.md) &#124; [Interview](LLD/14-ecommerce-website/interview.md) |
+| 15 | Food Delivery | Strategy, Observer | [README](LLD/15-food-delivery-system/README.md) &#124; [Interview](LLD/15-food-delivery-system/interview.md) |
+| 16 | Shopping Cart | Strategy, Observer | [README](LLD/16-shopping-cart-system/README.md) &#124; [Interview](LLD/16-shopping-cart-system/interview.md) |
+| 17 | Splitwise | Strategy, Builder | [README](LLD/17-splitwise/README.md) &#124; [Interview](LLD/17-splitwise/interview.md) |
 
 ---
 

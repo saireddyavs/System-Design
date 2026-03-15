@@ -107,7 +107,18 @@ Design and implement the backend for an e-commerce website that supports product
 
 ---
 
-## 5. SOLID Principles Mapping
+## 5. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **HashMap repositories** | `InMemoryProductRepo.products map[string]*Product`, Cart, Order, etc. | O(1) lookup by ID; standard in-memory storage for LLD | Slice + linear search: O(n); B-tree: for ordered range queries |
+| **Order total with discounts** | `OrderService.PlaceOrder` — cart items loop, `CouponService.ApplyCoupon`, `DiscountStrategy.Calculate` | Sum item prices; apply coupon via strategy; final = total − discount | Single formula: less flexible; multiple discount stacking: more complex |
+| **Inventory decrement (sync.Mutex)** | `InMemoryProductRepo.DecrementStock` — `r.mu.Lock()` | Atomic stock update; prevent oversell under concurrent orders | Optimistic locking: version field; DB transaction: for persistence |
+| **Payment strategy dispatch** | `PaymentService.processors map[PaymentMethod]PaymentProcessor` | O(1) lookup by method; route to correct processor (Credit, Debit, UPI, Wallet) | Switch: O(n) branches; Strategy interface: same pattern |
+
+---
+
+## 6. SOLID Principles Mapping
 
 | Principle | Implementation |
 |----------|----------------|
@@ -119,7 +130,7 @@ Design and implement the backend for an e-commerce website that supports product
 
 ---
 
-## 6. Interview Explanations
+## 7. Interview Explanations
 
 ### 3-Minute Pitch
 > "I've designed an e-commerce backend in Go using Clean Architecture. The core flow is: User adds items to cart → Places order with optional coupon → We validate stock, apply discount via Strategy, process payment via Strategy, decrement inventory, and notify via Observer. Repositories abstract storage, so we can swap in-memory for DB. Payment and discount use Strategy pattern so we can add UPI or BOGO coupons without touching existing code. All repositories are thread-safe with RWMutex. The order lifecycle goes Placed → Confirmed → Shipped → Delivered, with Cancelled/Returned for rollback."
@@ -133,7 +144,7 @@ Design and implement the backend for an e-commerce website that supports product
 
 ---
 
-## 7. Future Improvements
+## 8. Future Improvements
 
 | Area | Improvement |
 |------|-------------|
@@ -148,7 +159,7 @@ Design and implement the backend for an e-commerce website that supports product
 
 ---
 
-## 8. Project Structure
+## 9. Project Structure
 
 ```
 14-ecommerce-website/
@@ -168,7 +179,7 @@ Design and implement the backend for an e-commerce website that supports product
 
 ---
 
-## 9. Running the Project
+## 10. Running the Project
 
 ```bash
 # Build
@@ -183,7 +194,7 @@ go test ./tests/... -v
 
 ---
 
-## 10. Key Design Decisions
+## 11. Key Design Decisions
 
 1. **In-memory storage** – Simplifies demo; production would use DB
 2. **Synchronous payment** – Real system would use async webhooks

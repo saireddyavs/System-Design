@@ -109,7 +109,19 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 
 ---
 
-## 5. SOLID Principles Mapping
+## 5. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **HashMap** | All repositories (`InMemoryUserRepository`, `InMemoryMessageRepository`, `InMemoryChatRoomRepository`); `InMemoryBroker.subscribers`, `InMemoryBroker.queues` | O(1) lookup by ID; subscriber map for direct delivery | B-tree for range queries; Redis Pub/Sub for distributed |
+| **Pub/Sub (Observer)** | `InMemoryBroker`: `subscribers map[userID]chan *Message`; `Publish()` → `Deliver()` → `deliverToUser()` | Decouple producers from consumers; each user has dedicated channel | Redis Pub/Sub; RabbitMQ for persistence |
+| **Message queue** | `InMemoryBroker.queues map[userID][]*Message` for offline users | Store messages when user offline or channel full; `GetQueuedMessages()` on reconnect | Kafka; persistent queue with TTL |
+| **Direct delivery** | `DirectDelivery.Deliver()`: iterate `recipientIDs`, call `deliverToUser()` per recipient | Online users get immediate send via subscriber channel; non-blocking `select` with default | Fan-out to topic; multicast |
+| **Factory pattern** | `MessageFactory.Create()`: UUID, timestamps, default Status/ReadBy | Encapsulate message creation; consistent structure | Builder pattern; protobuf/generated |
+
+---
+
+## 6. SOLID Principles Mapping
 
 | Principle | Implementation |
 |-----------|----------------|
@@ -121,7 +133,7 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 
 ---
 
-## 6. Concurrency Model
+## 7. Concurrency Model
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -146,7 +158,7 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 
 ---
 
-## 7. Interview Explanations
+## 8. Interview Explanations
 
 ### 3-Minute Pitch
 "This is a chat application with clean architecture. Users register and authenticate. We support 1:1 and group chats with a 100-member limit. Messages are persisted and delivered in real-time via an Observer pattern—subscribers get a channel when they connect, and the broker sends messages to those channels. Offline users get messages queued. We use Repository pattern for data access, Strategy for delivery (DirectDelivery), and Factory for message creation. All shared state is protected by mutexes; each user has their own channel for lock-free delivery. SOLID principles are applied throughout—services depend on interfaces, not implementations."
@@ -161,7 +173,7 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 
 ---
 
-## 8. Future Improvements
+## 9. Future Improvements
 
 1. **Persistence**: Replace in-memory repos with PostgreSQL/MongoDB
 2. **Real-time transport**: WebSocket/SSE layer that subscribes to broker and pushes to clients
@@ -176,7 +188,7 @@ Sender → MessageService → Persist → MessageBroker.Publish()
 
 ---
 
-## 9. Running the Application
+## 10. Running the Application
 
 ```bash
 # Install dependencies
@@ -189,7 +201,7 @@ go run ./cmd/main.go
 go test ./tests/... -v
 ```
 
-## 10. Directory Structure
+## 11. Directory Structure
 
 ```
 09-chat-application/

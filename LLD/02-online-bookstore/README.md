@@ -140,6 +140,17 @@ A production-quality, interview-ready implementation of an Online Bookstore in G
 
 ---
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|-------------|------------|-----|------------------------|
+| **HashMap** | `InMemoryBookRepository.books`, `InMemoryOrderRepository`, `InMemoryCartRepository` | O(1) lookup by ID; repositories use map for CRUD | Alternative: B-tree for range queries; HashMap sufficient for ID-based access |
+| **String matching** | `InMemorySearchEngine.Search()`, `containsIgnoreCase()` | Case-insensitive substring search via `strings.Contains(strings.ToLower(s), strings.ToLower(substr))` | Production: Elasticsearch/Meilisearch for O(log N) full-text; in-memory linear scan OK for <10K books |
+| **Registry pattern** | `PaymentProcessorRegistry.processors` (map[string]PaymentProcessor) | O(1) payment method lookup; add new methods without modifying OrderService | Strategy + Registry = Open/Closed; alternative: factory with switch |
+| **sync.RWMutex** | All in-memory repositories | Read-heavy (GetByID, Search) use RLock; Create/Update/Delete use Lock | Per-entity locking could improve concurrency; RWMutex simpler for LLD scope |
+
+---
+
 ## Quick Start
 
 ```bash

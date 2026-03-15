@@ -131,7 +131,17 @@ type ShareObserver interface {
 // SharingService registers observers; on share, notifies all via OnFileShared/OnFolderShared
 ```
 
-## 6. SOLID Principles Mapping
+## 6. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **Tree (Composite)** | `Folder` with `Children []FileSystemItem`; `File` and `Folder` implement `FileSystemItem` | Hierarchical file/folder structure; recursive `GetSize()`, delete, list | Flat namespace with path strings; B-tree for large directories |
+| **HashMap** | All repositories (`InMemoryUserRepo`, `InMemoryFileRepo`, `InMemoryPermissionRepo`, `InMemoryVersionRepo`, `InMemorySearchEngine`) | O(1) lookup by ID; fast Create/GetByID/Update | B-tree for range queries; inverted index for search |
+| **Version chain** | `InMemoryVersionRepo.byFileID`: `fileID -> []versionID` (ordered); `File.Versions []*Version` | Linked list of versions per file; cap at 10, evict oldest | Delta/diff storage for space; append-only log |
+| **Permission inheritance** | `SharingService.HasAccess()`: check owner or `GetByFileAndUser`; folder share implies children (simplified) | Owner has full access; shared users get View/Edit per permission | Walk parent chain for inherited perms; ACL with groups |
+| **sync.RWMutex** | All repositories, services, models | Thread-safe concurrent access; RLock for reads | Distributed lock for multi-instance; optimistic locking |
+
+## 7. SOLID Principles Mapping
 
 | Principle | Implementation |
 |-----------|----------------|
@@ -141,7 +151,7 @@ type ShareObserver interface {
 | **I - Interface Segregation** | Separate interfaces: FileRepository, UserRepository, StorageProvider, SearchEngine (clients depend only on what they need) |
 | **D - Dependency Inversion** | Services depend on interfaces (UserRepository), not concrete InMemoryUserRepo |
 
-## 7. Permission Model
+## 8. Permission Model
 
 | Level | View | Edit | Delete | Share |
 |-------|------|------|--------|-------|
@@ -153,7 +163,7 @@ type ShareObserver interface {
 - **Only owner** can share or delete
 - **Shared users** get View or Edit based on permission level
 
-## 8. Business Rules
+## 9. Business Rules
 
 - **Storage quota**: Default 1GB per user
 - **File versioning**: Keep last 10 versions per file
@@ -161,7 +171,7 @@ type ShareObserver interface {
 - **Only owner** can share or delete
 - **Shared users** can view or edit based on permission level
 
-## 9. Interview Explanations
+## 10. Interview Explanations
 
 ### 3-Minute Summary
 
@@ -183,7 +193,7 @@ type ShareObserver interface {
 
 7. **Sharing**: Permission has FileID, UserID, Level. HasAccess checks owner or permission. Only owner can Share/Revoke.
 
-## 10. Future Improvements
+## 11. Future Improvements
 
 | Area | Improvement |
 |------|-------------|
@@ -196,7 +206,7 @@ type ShareObserver interface {
 | **API** | REST/gRPC; pagination, streaming |
 | **Security** | Encryption at rest; signed URLs for download |
 
-## 11. Running the Project
+## 12. Running the Project
 
 ```bash
 # Build
@@ -209,7 +219,7 @@ go run ./cmd/main.go
 go test ./tests/... -v
 ```
 
-## 12. Directory Structure
+## 13. Directory Structure
 
 ```
 08-file-storage-system/

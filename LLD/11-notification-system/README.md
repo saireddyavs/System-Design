@@ -103,7 +103,19 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 
 ---
 
-## 6. Concurrency Model
+## 6. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **Channel dispatch map** | `NotificationService.senders map[Channel]NotificationSender` | O(1) lookup of sender by channel; add new channels without code changes | Switch statement: O(n) branches; map scales better for many channels |
+| **Sliding window rate limiter** | `SlidingWindowRateLimiter.records map[string][]time.Time` | Count events in rolling time window; prune old timestamps on Allow/Record | Token bucket: simpler but less precise; fixed window: boundary burst problem |
+| **Exponential backoff retry** | `RetrySender.Send()` — backoff *= 2 each attempt | Reduces load on failing services; spreads retries over time | Linear backoff: predictable but less adaptive; jitter: adds randomness for distributed systems |
+| **Template placeholder replacement** | `DefaultTemplateEngine.replacePlaceholders()` — regex `\{\{(\w+)\}\}` | Replace `{{variable}}` with values; regex finds all placeholders in one pass | String split/replace: manual; Mustache/Handlebars: overkill for simple LLD |
+| **Priority queue (heap)** | `PriorityJobQueue` in main.go — `container/heap` | Process high-priority notifications first; O(log n) push/pop | FIFO queue: simpler but no priority; sorted list: O(n) insert |
+
+---
+
+## 7. Concurrency Model
 
 ### Worker Pool
 - **Priority Queue**: `container/heap` for processing high-priority notifications first
@@ -122,7 +134,7 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 
 ---
 
-## 7. Interview Explanations
+## 8. Interview Explanations
 
 ### 3-Minute Summary
 "We built a notification system with Email, SMS, and Push. Each channel is a Strategy implementing `NotificationSender`. We use a Builder for requests and a Template Engine for `{{variable}}` substitution. User preferences and rate limits (10/hour/channel) are enforced; Critical bypasses limits. Retries use exponential backoff via a Decorator. Observers get lifecycle events. A worker pool with a priority queue processes notifications asynchronously. All components depend on interfaces for testability and extensibility."
@@ -137,7 +149,7 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 
 ---
 
-## 8. Future Improvements
+## 9. Future Improvements
 
 | Area | Improvement |
 |------|-------------|
@@ -152,7 +164,7 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 
 ---
 
-## Project Structure
+## 10. Project Structure
 
 ```
 11-notification-system/
@@ -169,7 +181,7 @@ Request → Create Notification → Validate User/Channel → Rate Limit Check
 └── README.md
 ```
 
-## Run
+## 11. Run
 
 ```bash
 go run ./cmd

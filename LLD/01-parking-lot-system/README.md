@@ -155,7 +155,18 @@ car := models.NewVehicle(models.VehicleTypeCar, "CAR-001")
 
 ---
 
-## 8. How to Run
+## 8. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|-------------|------------|-----|------------------------|
+| **HashMap** | `ParkingService.tickets` (map[string]*Ticket), `ParkingLot.levelID` | O(1) ticket lookup by ID; O(1) level lookup by ID; Unpark supports license plate via linear scan over tickets | License→ticket could use separate map for O(1) license lookup; tradeoff: extra memory vs faster unpark |
+| **Linear scan** | `NearestSpotStrategy.FindSpot()` | Iterates spots in order to find first available; simple, predictable (nearest-to-entrance) | Could use min-heap by distance; for small spot counts, linear is sufficient |
+| **sync.RWMutex** | ParkingLot, ParkingLevel, ParkingSpot, ParkingService | Read-heavy (availability checks) use RLock; park/unpark use Lock; prevents race conditions | Coarse-grained; fine-grained per-spot locks could improve parallelism but add complexity |
+| **Singleton** | `ParkingLot.GetInstance()` | Single global lot; `sync.Once` for thread-safe lazy init | Alternative: dependency injection of lot instance; Singleton simplifies demo, DI better for tests |
+
+---
+
+## 9. How to Run
 
 ### Prerequisites
 - Go 1.21+
@@ -182,7 +193,7 @@ go test ./tests/... -cover
 
 ---
 
-## 9. Concurrency Considerations
+## 10. Concurrency Considerations
 
 | Component | Mechanism | Rationale |
 |-----------|-----------|-----------|
@@ -198,7 +209,7 @@ go test ./tests/... -cover
 
 ---
 
-## 10. Future Improvements
+## 11. Future Improvements
 
 1. **Observer Pattern** – Notify displays/APIs when availability changes
 2. **Persistence** – Store tickets and state in DB
@@ -210,7 +221,7 @@ go test ./tests/... -cover
 
 ---
 
-## 11. Interview Explanation
+## 12. Interview Explanation
 
 ### 3-Minute Version
 

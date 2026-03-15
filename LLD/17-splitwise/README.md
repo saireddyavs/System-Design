@@ -179,7 +179,18 @@ Design and implement an expense tracking system that allows users to split expen
 
 ---
 
-## 6. SOLID Principles Mapping
+## 6. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **Balance graph (net balance)** | `BalanceService.SimplifyDebts()` | Net per user = sum(credits) - sum(debits); reduces to creditors vs debtors | Full graph traversal; min-cost flow for optimal |
+| **Greedy debt simplification** | `SimplifyDebts()` matching loop | Match largest creditor with largest debtor; minimize transaction count | Two-pointer; priority queues; exact min-flow |
+| **Split strategies** | Equal, Exact, Percentage, Share | Each strategy computes `[]Split` from amount + params; registry selects by type | Single switch; visitor pattern |
+| **Expense builder pattern** | `ExpenseBuilder.With*().Build()` | Fluent construction of Expense with optional fields | Constructor with options; factory |
+
+---
+
+## 7. SOLID Principles Mapping
 
 | Principle | Application |
 |-----------|-------------|
@@ -191,7 +202,7 @@ Design and implement an expense tracking system that allows users to split expen
 
 ---
 
-## 7. Interview Explanations
+## 8. Interview Explanations
 
 ### 3-Minute Pitch
 "Splitwise tracks shared expenses among friends. Users create groups, add expenses with different split types (equal, exact, percentage, share), and the system updates balances. When a user pays, we record who owes whom. The debt simplification algorithm uses net balance: compute each user's net (credits minus debits), separate creditors and debtors, then greedily match largest creditor with largest debtor to minimize transactions. We use Strategy for split types, Observer for notifications, Repository for data access, and Builder for complex expense construction."
@@ -211,7 +222,7 @@ A: Shard by groupID; each group's balances are independent. Use event sourcing f
 
 ---
 
-## 8. Future Improvements
+## 9. Future Improvements
 
 - **Currency support**: Multi-currency with conversion
 - **Recurring expenses**: Monthly rent, subscriptions
@@ -223,7 +234,7 @@ A: Shard by groupID; each group's balances are independent. Use event sourcing f
 
 ---
 
-## 9. Running Instructions
+## 10. Running Instructions
 
 ```bash
 # Build
@@ -238,7 +249,7 @@ go test ./... -v
 
 ---
 
-## 10. Directory Structure
+## 11. Directory Structure
 
 ```
 17-splitwise/

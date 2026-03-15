@@ -101,7 +101,19 @@ MarkSeatsBooked(flightID, seatIDs)
 
 ---
 
-## 7. SOLID Principles Mapping
+## 7. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **Seat matrix (row×col)** | `Flight.Seats` built via `FlightBuilder.AddSeatSection(rows, columns, class)` | Nested loop creates seat grid (row 1–N × columns A,B,C); O(rows×cols) per flight | 2D array: explicit; flat slice with index calc: same access pattern |
+| **Multi-field search** | `SearchService.SearchFlights(criteria)` — Origin, Destination, Date, Class | Filter flights by route + date; optional class filter on available seats | Index per field: faster at scale; in-memory scan: fine for LLD |
+| **Builder** | `FlightBuilder` — fluent API for flight + seats | Build complex flight with multiple seat sections in one chain | Constructor: telescoping; Factory: less flexible for optional params |
+| **Observer** | `BookingNotifier` — `NotifyBookingCreated`, `NotifyBookingCancelled` | Decouple booking events from email/SMS/analytics; copy observers before notify | Event bus: more decoupled; direct call: simpler but coupling |
+| **Class-based pricing multiplier** | `ClassMultiplierPricing.CalculatePrice()` — `basePrice × seat.Class.ClassMultiplier()` | Economy 1x, Business 2.5x, First 5x; sum per seat | Lookup table: same; dynamic pricing: more complex |
+
+---
+
+## 8. SOLID Principles Mapping
 
 | Principle | Implementation |
 |-----------|----------------|
@@ -113,7 +125,7 @@ MarkSeatsBooked(flightID, seatIDs)
 
 ---
 
-## 8. Interview Explanations
+## 9. Interview Explanations
 
 ### 3-Minute Summary
 "We built an airline reservation system with clean architecture. Core entities are Flight, Seat, Passenger, and Booking. We use the Strategy pattern for seat assignment (auto, window, aisle preference) and pricing (class multiplier, demand-based). The Repository pattern abstracts data access for easy testing and DB swap. A Builder creates flights with seats; a Factory creates bookings. Observers notify on booking events. Cancellation uses a tiered refund policy. All repositories are thread-safe with RWMutex. SOLID is applied throughout—services depend on interfaces, and new strategies can be added without changing existing code."
@@ -127,7 +139,7 @@ MarkSeatsBooked(flightID, seatIDs)
 
 ---
 
-## 9. Future Improvements
+## 10. Future Improvements
 
 - **Database**: Replace in-memory repos with PostgreSQL; add transactions for booking flow.
 - **Distributed locking**: Redis-based locks for seat assignment in multi-instance deployment.
@@ -139,7 +151,7 @@ MarkSeatsBooked(flightID, seatIDs)
 
 ---
 
-## 10. Running the Project
+## 11. Running the Project
 
 ```bash
 # Build

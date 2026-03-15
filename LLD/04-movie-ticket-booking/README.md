@@ -131,6 +131,17 @@ defer lock.Unlock()
 | **Observability** | Structured logging, metrics (booking latency, failure rate) |
 | **Refund policy** | Configurable rules (e.g., no refund <2h before show) |
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|-------------|------------|-----|------------------------|
+| **HashMap** | `InMemoryShowRepository.shows`, `Show.SeatStatusMap` (map[string]SeatStatus) | O(1) show lookup; O(1) seat status by seatID | SeatStatusMap enables atomic seat-level updates |
+| **Seat grid** | `Screen.Seats` ([]Seat with Row, Number), `SeatStatusMap` | Represents theatre layout; row × number for display and booking | 2D array conceptually; slice + map for flexibility |
+| **Per-show mutex** | `InMemoryShowRepository.showLocks` (map[string]*sync.Mutex) | Pessimistic locking: only one booking per show at a time; prevents double-booking | Alternative: optimistic locking with retries; pessimistic better for high-contention seats |
+| **Linear search with filters** | `SearchService` (GetByMovieID, GetByTheatreID iterate shows) | Filter shows by movie, theatre, city; O(n) over shows | Add indexes (movieID→shows, theatreID→shows) for O(1) lookup; linear OK for LLD |
+
+---
+
 ## 9. Running the Project
 
 ```bash

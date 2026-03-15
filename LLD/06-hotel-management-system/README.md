@@ -89,6 +89,15 @@ Booking States (State Machine):
 
 **Implementation**: Interfaces `RoomRepository`, `BookingRepository`, etc.; in-memory implementations with `sync.RWMutex`.
 
+## Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **HashMap** | All repositories (`InMemoryRoomRepository`, `InMemoryBookingRepository`, `InMemoryGuestRepository`, `InMemoryPaymentRepository`) | O(1) lookup by ID; fast Create/GetByID/Update | B-tree for range queries; skip-list for ordered access |
+| **Date range overlap detection** | `BookingRepository.GetBookingsForRoomInRange`, `BookingService.CreateBooking` | Prevent overbooking: two ranges overlap iff `(StartA < EndB) && (EndA > StartB)` | Interval tree for O(log n) queries over many bookings; current linear scan is O(n) |
+| **Composite pricing strategy** | `strategies/pricing_strategy.go`: Base → Seasonal → Weekday/Weekend → Loyalty | Chain of multipliers: seasonal (peak/off-peak), weekend premium, loyalty discount | Rule engine; lookup table for fixed combinations |
+| **sync.RWMutex** | All repositories, `BookingService` | Thread-safe concurrent access; RLock for reads, Lock for writes | Distributed lock (Redis) for multi-instance; optimistic locking |
+
 ## SOLID Principles Mapping
 
 | Principle | Application |

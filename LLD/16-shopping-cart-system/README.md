@@ -168,7 +168,19 @@ Design and implement a complete e-commerce shopping cart system that supports pr
 
 ---
 
-## 5. SOLID Principles Mapping
+## 5. Data Structures & Algorithms
+
+| DS/Algorithm | Where Used | Why | Alternatives/Tradeoffs |
+|--------------|------------|-----|------------------------|
+| **HashMap (map)** | Cart repo (`carts`, `userCarts`), product lookup | O(1) cart/user/product lookup by ID; cart items by ProductID | Slice for small carts; B-tree for ordered iteration |
+| **Discount chain** | `DiscountStrategyRegistry` → Percentage, Flat, BOGO | Each coupon type uses its strategy; registry selects by `CouponType` | Chain of Responsibility; composite discounts |
+| **Tax calculation strategies** | `FlatTaxCalculator`, `StateTaxCalculator` | Tax = (subtotal - discount) × rate; state-specific rates in map | Rule engine; external tax service |
+| **Coupon validation** | `CouponService.ValidateAndGetDiscount()` | Check expiry, min order, usage limit; compute discount via strategy | Caching for hot coupons; idempotency for usage |
+| **Checkout summary builder** | `CheckoutService.Checkout()` | Build summary stepwise: subtotal → discount → tax → total | DTO; immutable result object |
+
+---
+
+## 6. SOLID Principles Mapping
 
 | Principle | Implementation |
 |-----------|----------------|
@@ -180,7 +192,7 @@ Design and implement a complete e-commerce shopping cart system that supports pr
 
 ---
 
-## 6. Interview Explanations
+## 7. Interview Explanations
 
 ### 3-Minute Pitch
 > "I designed a shopping cart system with clean architecture. Core entities are Product, User, Cart, CartItem, Order, and Coupon. The checkout flow validates cart and stock, applies discounts via Strategy pattern, calculates tax, processes payment, decrements stock, creates order, and clears cart. I used Strategy for discounts (percentage, flat, BOGO), tax, and payment so we can add new types without changing checkout logic. Observer pattern notifies on cart events. Repositories abstract data access for testability. All repositories use sync.RWMutex for thread safety."
@@ -200,7 +212,7 @@ Design and implement a complete e-commerce shopping cart system that supports pr
 
 ---
 
-## 7. Future Improvements
+## 8. Future Improvements
 
 - **Persistence**: Replace in-memory repos with PostgreSQL/Redis
 - **API Layer**: HTTP handlers (Gin/Echo) with REST endpoints
@@ -215,7 +227,7 @@ Design and implement a complete e-commerce shopping cart system that supports pr
 
 ---
 
-## 8. Running the Project
+## 9. Running the Project
 
 ```bash
 # Build
@@ -250,7 +262,7 @@ go test ./tests/... -v
 
 ---
 
-## 9. Directory Structure
+## 10. Directory Structure
 
 ```
 16-shopping-cart-system/
