@@ -82,6 +82,38 @@ Staff+ interview preparation — HLD, LLD, and deep engineering fundamentals.
 
 ---
 
+## Database Design (Interview Prep)
+
+> [Full DB Design README](db-design/README.md)
+
+| # | Topic | Description |
+|---|-------|-------------|
+| 01 | [DB Design Process](db-design/01-db-design-process.md) | Entity identification, ER diagrams, normalization (1NF→BCNF), full schema examples |
+| 02 | [SQL Fundamentals](db-design/02-sql-fundamentals.md) | DDL/DML, data types, constraints, SELECT execution order, indexes, transactions |
+| 03 | [Joins & Subqueries](db-design/03-joins-and-subqueries.md) | All JOIN types, correlated subqueries, anti-join/semi-join, LATERAL |
+| 04 | [Aggregations & Windows](db-design/04-aggregations-and-window-functions.md) | GROUP BY, HAVING, ROLLUP/CUBE, ROW_NUMBER, LAG/LEAD, running totals |
+| 05 | [Advanced SQL](db-design/05-advanced-sql.md) | Recursive CTEs, pivoting, JSON/JSONB, full-text search, query optimization |
+| 06 | [SQL Interview Questions](db-design/06-sql-interview-questions.md) | 55 problems (Easy/Medium/Hard) with complete solutions |
+| 07 | [NoSQL Essentials](db-design/07-nosql-essentials.md) | MongoDB, Redis, Cassandra, DynamoDB patterns & examples |
+
+---
+
+## API Design (Interview Prep)
+
+> [Full API Design README](api-design/README.md)
+
+| # | Topic | Description |
+|---|-------|-------------|
+| 01 | [API Design Process](api-design/01-api-design-process.md) | 5-step framework, resource modeling, endpoint design, request/response contracts |
+| 02 | [REST API Deep Dive](api-design/02-rest-api-deep-dive.md) | HTTP methods, status codes, headers, caching, idempotency, HATEOAS |
+| 03 | [Request & Response Patterns](api-design/03-request-response-patterns.md) | Pagination, filtering, sorting, bulk ops, async APIs, file uploads |
+| 04 | [Authentication & Security](api-design/04-authentication-and-security.md) | OAuth 2.0, JWT, API keys, RBAC, CORS, rate limiting |
+| 05 | [Error Handling & Versioning](api-design/05-error-handling-and-versioning.md) | RFC 7807, error taxonomy, versioning strategies, deprecation |
+| 06 | [GraphQL & gRPC](api-design/06-graphql-and-grpc.md) | Schema design, resolvers, Protobuf, streaming, when to use which |
+| 07 | [API Interview Questions](api-design/07-api-interview-questions.md) | 40+ problems with complete API designs |
+
+---
+
 ## Misc
 
 | Topic | Link |
