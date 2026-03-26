@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	ErrBookAlreadyExists = errors.New("book with this ISBN already exists")
+	ErrBookAlreadyExists   = errors.New("book with this ISBN already exists")
 	ErrMemberAlreadyExists = errors.New("member with this email already exists")
 )
 

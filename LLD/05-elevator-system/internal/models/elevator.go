@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	DefaultCapacity    = 1000 // kg
-	DefaultDoorTime    = 2 * time.Second
-	DefaultFloorTime   = 1 * time.Second
+	DefaultCapacity     = 1000 // kg
+	DefaultDoorTime     = 2 * time.Second
+	DefaultFloorTime    = 1 * time.Second
 	OverweightThreshold = 900 // kg - 90% of capacity
 )
 
@@ -36,10 +36,10 @@ func NewElevator(id string) *Elevator {
 		ID:               id,
 		CurrentFloor:     0,
 		Direction:        DirectionIdle,
-		State:           StateIdle,
-		Capacity:        DefaultCapacity,
-		CurrentLoad:     0,
-		RequestQueue:    make([]*Request, 0),
+		State:            StateIdle,
+		Capacity:         DefaultCapacity,
+		CurrentLoad:      0,
+		RequestQueue:     make([]*Request, 0),
 		DoorOpenDuration: DefaultDoorTime,
 		FloorTravelTime:  DefaultFloorTime,
 	}
